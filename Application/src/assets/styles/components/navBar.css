@@ -1,0 +1,40 @@
+
+/* General side bar styles */
+.navbar {
+    /* Positioning */
+    position: relative;
+    float: left;
+    width: var(--navbar-width);
+    height: 100%;
+    box-sizing: border-box;
+
+    /* Display properties */
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    background-color: var(--navbar-background-col);
+}
+
+/* Icon div styles */
+.navbar-icon {
+    width: var(--navbar-width);
+    height: var(--navbar-width);
+    margin-top: var(--navbar-icon-spacing);
+    margin-bottom: var(--navbar-icon-spacing);
+    display: flex;
+    justify-content: center;
+}
+
+/* Icon image styles */
+.navbar-icon > img {
+    display: block;
+    margin: auto;
+    width: var(--navbar-icon-size);
+    height: var(--navbar-icon-size);
+    filter: var(--navbar-icon-svg-filter);
+}
+
+/* Icon div hover properties */
+.navbar-icon:hover {
+    background-color: var(--navbar-background-hover-col);
+}
