@@ -1,0 +1,53 @@
+
+/* Common pop-up component style sheet */
+.modal-confirmation {
+    position: fixed;
+    background-color: white;
+    justify-content: center;
+
+    width: 30%;
+    min-height: 270px;
+    transform: translate(-50%, -50%);
+
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+.modal-confirmation-content {
+    padding: 24px;
+    justify-content: center;
+    text-align: center;
+    font-size: 19px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.modal-confirmation-content > button {
+    width: 100px;
+    height: 40px;
+    margin-top: 24px;
+    margin-left: 24px;
+    margin-right: 24px;
+}
+
+
+/* Corner close button styles */
+.close {
+    position: absolute;
+
+    top: -8px;
+    right: -8px;
+    border: 0px;
+    height: 24px;
+    width: 24px;
+    font-size: 18px;
+    border-radius: 24px;
+}
+
+.close:hover {
+    background-color: #e7e6e6;
+}
+
+.close:active {
+    background-color: #d8d8d8;
+}
+

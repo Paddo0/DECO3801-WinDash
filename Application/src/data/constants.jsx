@@ -6,3 +6,11 @@ export const PageNames = {
     SETTINGS_PAGE_NAME: "Settings",
     INFO_PAGE_NAME: "Help"
 };
+
+export const DefaultSettings = {
+    meterId: 1003253,
+    usageLimits: {
+        dailyLimit: 20,
+        monthlyLimit: 1000
+    }
+}

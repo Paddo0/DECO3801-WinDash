@@ -20,7 +20,9 @@ function Navbar()
             </div>
 
             {/* Output of router content */}
-            <Outlet />
+            <div className="PageContent">
+                <Outlet />
+            </div>
         </>
     );
 }

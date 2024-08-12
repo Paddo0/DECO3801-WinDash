@@ -2,4 +2,8 @@
 @import 'variables.css';
 @import 'base/index.css';
 @import 'base/app.css';
+@import 'base/pageContent.css';
+@import 'base/settings.css';
 @import 'components/navBar.css';
+@import 'components/backgroundDimmer.css';
+@import 'components/pop-up.css';
