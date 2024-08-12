@@ -1,0 +1,135 @@
+
+/* Settings page styles */
+.Settings {
+    /* Positioning */
+    position: relative;
+    width: 60%;
+    margin-top: var(--settings-padding-size);
+    margin-left: auto;
+    margin-right: auto;
+    
+    /* Other Styles */
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Text styles */
+.Settings > h1 {
+    font-size: var(--settings-header-size);
+    text-decoration: underline;
+}
+
+.Settings > h2 {
+    font-size: var(--settings-subheader-size);
+}
+
+.Settings p {
+    font-weight: bold;
+}
+
+.Settings > hr {
+    width: 50%;
+}
+
+.SettingsInput {
+    width: 50%;
+    float: right;
+    margin-bottom: 3%;
+}
+
+.SettingsLabel {
+    width: 50%;
+    float: left;
+}
+
+/* Meter display styles */
+.MeterSettings {
+    margin-left: auto;
+    margin-right: auto;
+    padding: 24px;
+    padding-top: 12px;
+    width: 60%;
+    min-height: 100px;
+    margin-bottom: 3%;
+    text-align: left;
+    display: inline-block;
+
+    /* Border Styles */
+    border: 1px solid black;
+    border-radius: 8px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.MeterSettings > .MeterLabels {
+    width: 50%;
+    height: 100%;
+    float: left;
+}
+
+.MeterLabels > h1 {
+    font-size: var(--settings-meter-header-size);
+    text-decoration: underline;
+}
+
+.MeterLabels > p {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: normal;
+    font-size: 18px;
+}
+
+.MeterLabels > button {
+    margin-top: 48px;
+    padding: 12px;
+    width: 40%;
+}
+
+.MeterSettings > .MeterImage {
+    float: right;
+    margin-top: 12px;
+    width: 40%;
+}
+
+.MeterImage > img {
+    width: 100%;
+    max-width: 100%;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+/* Button styles */
+.RemoveButton {
+    background-color: var(--settings-remove-button);
+}
+
+.RemoveButton:hover {
+    background-color: var(--settings-remove-button-hover);
+}
+
+.RemoveButton:active {
+    background-color: var(--settings-remove-button-active);
+}
+
+/* Reset defaults button */
+.ResetButton {
+    padding: 12px;
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+/* Add meter id button */
+.AddMeterButton {
+    background-color: var(--settings-add-meter-button);
+    color: white;
+    margin-top: 24px;
+    margin-bottom: 24px;
+    padding: 12px;
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+.AddMeterButton:hover {
+    background-color: var(--settings-add-meter-button-hover);
+}
+
+.AddMeterButton:active {
+    background-color: var(--settings-add-meter-button-active);
+}

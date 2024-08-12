@@ -10,4 +10,17 @@
     --navbar-icon-size: 45px;
     /* To set color of svg filter go to: https://isotropic.co/tool/hex-color-to-css-filter/ */
     --navbar-icon-svg-filter: invert(74%) sepia(61%) saturate(367%) hue-rotate(4deg) brightness(98%) contrast(79%);
+
+
+    /* Settings Page */
+    --settings-header-size: 42px;
+    --settings-subheader-size: 28px;
+    --settings-meter-header-size: 24px;
+    --settings-padding-size: 3%;
+    --settings-remove-button: #ff6161;
+    --settings-remove-button-hover: #ff4d4d;
+    --settings-remove-button-active: #ff7777;
+    --settings-add-meter-button: #3d8ffa;
+    --settings-add-meter-button-hover: #559dfc;
+    --settings-add-meter-button-active: #3186f7;
 }

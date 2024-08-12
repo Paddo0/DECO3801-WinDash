@@ -1,0 +1,9 @@
+
+/* Defines container wrapping each page's content to allow scrolling of contents only and not navbar */
+.PageContent {
+    position: relative;
+    width: auto;
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
