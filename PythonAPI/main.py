@@ -1,7 +1,11 @@
+
 from flask import Flask, request, jsonify
 import firebase_admin
 from firebase_admin import credentials, firestore
 #from firebase_config import db
+
+
+
 
 app = Flask(__name__)
 
@@ -33,6 +37,8 @@ def get_data():
 def main():
     # TODO - Implement a python api using flask or any other api tool to return machine learning predictions
     print("TODO")
+
+     
 
 
 if __name__ == "__main__":
