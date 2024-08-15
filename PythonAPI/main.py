@@ -6,13 +6,13 @@ from firebase_admin import credentials, firestore
 app = Flask(__name__)
 
 # Path to the service account key 
-cred = credentials.Certificate('path-service-account')
+#cred = credentials.Certificate('path-service-account')
 
 # Initialization of the app 
-firebase_admin.initialize_app(cred)
+#firebase_admin.initialize_app(cred)
 
 # Initialize Firestore DB
-db = firestore.client()
+#db = firestore.client()
 
 @app.route('/add', methods=['POST'])
 def post_prediction():
