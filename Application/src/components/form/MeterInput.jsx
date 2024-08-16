@@ -58,7 +58,7 @@ function MeterInput(props)
 
                                     <br />
 
-                                    <button className="AddMeterButton" onClick={updateConfig}>Submit </button>
+                                    <button className="AddMeterButton" onClick={() => {updateConfig(); close()}}>Submit </button>
                                 </div>
 
                                 <div className="modal-add-meter-image">
