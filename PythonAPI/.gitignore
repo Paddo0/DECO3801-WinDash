@@ -9,3 +9,6 @@
 #API/Database Keys
 .env
 /keys.env
+
+#Training Data
+/data

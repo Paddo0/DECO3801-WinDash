@@ -3,7 +3,11 @@ import torch.nn as nn
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import MinMaxScaler
+import pandas as pd
 
+#import data 
+df = pd.read_csv('PythonAPI\\data\\household_power_consumption.txt', sep=';')
+print(df)
 
 # Prepare the input and target sequences
 def create_sequences(input_data, seq_length):
