@@ -29,6 +29,56 @@
     margin-right: 24px;
 }
 
+/* Add meter popup styles */
+.modal-add-meter {
+    position: fixed;
+    background-color: white;
+    justify-content: center;
+
+    width: 40%;
+    min-height: 270px;
+    transform: translate(-50%, -50%);
+
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+.modal-add-meter-content {
+    padding: 4%;
+    padding-top: 0px;
+    justify-content: left;
+    text-align: left;
+    font-size: 17px;
+    font-family: Arial, Helvetica, sans-serif;
+    float: left;
+    width: 40%;
+}
+
+.modal-add-meter-content > input {
+    margin: 3%;
+    height: 24px;
+}
+
+.modal-add-meter-image {
+    padding: 4%;
+    padding-top: 0px;
+    justify-content: left;
+    text-align: left;
+    font-size: 17px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.modal-add-meter > .modal-add-meter-image {
+    float: right;
+    margin-top: 24px;
+    width: 40%;
+}
+
+.modal-add-meter-image > img {
+    width: 100%;
+    max-width: 100%;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
 
 /* Corner close button styles */
 .close {
