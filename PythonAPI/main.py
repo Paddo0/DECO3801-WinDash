@@ -3,7 +3,7 @@ from flask import Flask, request, jsonify
 import firebase_admin
 from firebase_admin import credentials, firestore
 #from firebase_config import db
-
+from RNN import get_pred
 
 
 
@@ -22,17 +22,23 @@ app = Flask(__name__)
 def post_prediction():
     # TODO - Implement a method to post next prediction/s to the app
     try:
-        pass
+        data = request.get_json()
+        number = data['number']
+        return jsonify({"message": f"Received Prediction: {number}"})
     except Exception as e:
         return f"An Error Occurred: {e}", 400
 
-@app.route('/list', methods=['GET'])
+@app.route('/pred', methods=['GET'])
 def get_data():
     # TODO - Implement a method to retreive the real time data from the database 
+    prediction = get_pred()
+
     try:
          pass
     except Exception as e:
             return f"An Error Occurred: {e}", 400
+    
+    return f"\nFirst prediction is {prediction}"
 
 def main():
     # TODO - Implement a python api using flask or any other api tool to return machine learning predictions
