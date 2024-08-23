@@ -4,6 +4,12 @@
 @import 'base/app.css';
 @import 'base/pageContent.css';
 @import 'base/settings.css';
+@import 'base/statistics.css';
 @import 'components/navBar.css';
 @import 'components/backgroundDimmer.css';
 @import 'components/pop-up.css';
+@import 'components/usage-limit.css';
+@import 'components/usage-graph.css';
+@import 'components/usage-statistics.css';
+@import 'components/usage-prediction.css';
+@import 'components/dropdown.css';

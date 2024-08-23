@@ -1,0 +1,12 @@
+
+.DailyStatistics {
+    display: flex;
+    flex-wrap: wrap;
+    height: 100%;
+}
+
+.MonthlyStatistics {
+    display: flex;
+    flex-wrap: wrap;
+    height: 100%;
+}
