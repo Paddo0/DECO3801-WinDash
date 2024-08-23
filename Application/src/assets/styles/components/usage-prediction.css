@@ -1,0 +1,13 @@
+
+/* Predictions page container */
+.UsagePredictions {
+    width: 60%;
+    height: 24%;
+    margin-left: 5%;
+    margin-right: var(--statistics-margin);
+    margin-bottom: 5%;
+
+    /* Boder styles */
+    border: 1px solid black;
+    border-radius: 10px;
+}

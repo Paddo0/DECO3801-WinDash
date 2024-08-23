@@ -1,0 +1,11 @@
+
+/* Dropdown selector styles */
+.Dropdown {
+    margin: auto;
+    margin-top: 0px ;
+}
+
+.Dropdown > Select {
+    font-size: 14px;
+    padding: 8px;
+}

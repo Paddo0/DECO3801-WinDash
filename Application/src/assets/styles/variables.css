@@ -23,4 +23,7 @@
     --settings-add-meter-button: #3d8ffa;
     --settings-add-meter-button-hover: #559dfc;
     --settings-add-meter-button-active: #3186f7;
+
+    /* Statistics */
+    --statistics-margin: 2.5%;
 }

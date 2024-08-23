@@ -9,15 +9,15 @@ import UsageLimit from "../../components/ui/UsageLimit";
  * Base daily statistics page component
  * @returns {React.JSX.Element} Daily statistics component
  */
-function DailyStatistics() {
+function MonthlyStatistics() {
     // Settings Config
     const { config } = useContext(SettingsContext);
 
     return (
-        <div className="DailyStatistics">
-            <UsageGraph title="Daily Statistics"/>
+        <div className="MonthlyStatistics">
+            <UsageGraph title="Monthly Statistics" />
 
-            <UsageStatistics title="Daily Summary"/>
+            <UsageStatistics title="Monthly Summary" />
 
             <UsagePredictions />
             
@@ -26,4 +26,4 @@ function DailyStatistics() {
     );
 }
   
-export default DailyStatistics;
+export default MonthlyStatistics;
