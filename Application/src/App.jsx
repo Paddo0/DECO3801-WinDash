@@ -7,6 +7,7 @@ import Settings from "./pages/Settings/Settings";
 import { PageNames } from './data/constants';
 import { settings, SettingsContext } from "./pages/Settings/SettingsContext";
 import { useState } from "react";
+import InfoPage from "./pages/InfoPage/InfoPage";
 
 /**
  * Default app component to initialize the webpage
@@ -26,6 +27,7 @@ function App() {
               <Route path={PageNames.HOME_PAGE_NAME} element={<Dashboard />} />
               <Route path={PageNames.DAILY_PAGE_NAME} element={<DailyStatistics />} />
               <Route path={PageNames.SETTINGS_PAGE_NAME} element={<Settings />} />
+              <Route path={PageNames.INFO_PAGE_NAME} element={<InfoPage />} />
               <Route path="*" element={<NoPage />} />
             </Route>
           </Routes>
