@@ -1,5 +1,5 @@
 import Dropdown from "./Dropdown";
-import PlaceholderGraph from "../../assets/images/debug-graph-placeholder.PNG";
+import { Chart } from "react-google-charts";
 
 
 /**
@@ -8,9 +8,6 @@ import PlaceholderGraph from "../../assets/images/debug-graph-placeholder.PNG";
  */
 function UsageGraph(props)
 {
-    const options = [
-        'one', 'two', 'three'
-      ];
     return(
         <div className="UsageGraph">
             <div className="UsageGraphBar">
@@ -32,7 +29,37 @@ function UsageGraph(props)
             </div>
 
             <div className="UsageGraphDisplay">
-                <img src={PlaceholderGraph} alt="graph" />
+                <Chart 
+                    chartType="AreaChart"
+                    data={props.data}
+                    width="100%"
+                    height="100%"
+                    options={
+                        {
+                            backgroundColor: "#f5f5f5",
+                            hAxis: {    
+                                format: props.graphConfig.format,
+                                minValue: props.graphConfig.minValue,
+                                maxValue: props.graphConfig.maxValue,
+                            },
+                            
+                            vAxis: { 
+                                title: "Power Consumption",
+                                minValue: 0,
+                                titleTextStyle: {
+                                    fontSize: 24,
+                                    fontName: 'Helvetica',
+                                },
+                            },
+
+                            chartArea: {
+                                width: "75%",
+                                height: "80%",
+                                right: "15%",
+                            }
+                        }
+                    }
+                />
             </div>
 
         </div>
