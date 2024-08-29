@@ -21,7 +21,7 @@ minuteIntensity = 16.8
 minuteVoltage = 244.8
 
 # Defines the current date for daily data
-currentDate = datetime.datetime(2006, 12, 16)
+currentDate = datetime.datetime(2024, 8, 30)
 
 # Overall Data
 # Defines the date to set the day data summary for

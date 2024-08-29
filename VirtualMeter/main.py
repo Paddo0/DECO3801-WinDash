@@ -1,5 +1,6 @@
 import constants
 from DatabaseMutations import *
+from LoadFromCsv import *
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
@@ -11,7 +12,7 @@ def main():
     """
 
     # Command input to distinguish between functionality
-    command = "add_day_array_summary"
+    command = "set_current_day"
 
     # Defines connection to firebase database
     database = Initialize()
@@ -76,6 +77,9 @@ def RunCommand(command, db):
 
     elif command == "clear_all_data":
         ClearAllData(db, constants.meterId)
+
+    elif command == "load_from_csv":
+        LoadCsvData(db, constants.meterId, constants.dataFilepath)
 
 
 if __name__ == "__main__":
