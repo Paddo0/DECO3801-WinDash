@@ -1,0 +1,14 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# production
+/build
+
+#API/Database Keys
+.env
+/keys.env
+
+#Training Data
+/data
