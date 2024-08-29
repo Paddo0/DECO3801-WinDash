@@ -11,7 +11,7 @@ def main():
     """
 
     # Command input to distinguish between functionality
-    command = "add_meter"
+    command = "add_day_array_summary"
 
     # Defines connection to firebase database
     database = Initialize()
@@ -22,10 +22,13 @@ def main():
 
 
 def Initialize():
+    # Loading credentials
     cred = credentials.Certificate("data/deco-windash-firebase-adminsdk-u0tv1-f05fb8cc6f.json")
 
+    # Initializing app
     app = firebase_admin.initialize_app(cred)
 
+    # Establishing database reference
     database = firestore.client()
 
     return database
