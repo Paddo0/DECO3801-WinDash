@@ -2,7 +2,7 @@ import UsageGraph from "../../components/ui/UsageGraph";
 import UsageStatistics from "../../components/ui/UsageStatistics";
 import UsagePredictions from "../../components/ui/UsagePredictions";
 import UsageLimit from "../../components/ui/UsageLimit";
-import { DailyGraphConfig, PredictionsInfoText } from "../../data/constants";
+import { DailyGraphConfig, PredictionsInfo } from "../../data/constants";
 import { SettingsContext } from '../../pages/Settings/SettingsContext';
 import { useContext } from 'react';
 
@@ -50,7 +50,7 @@ function DailyStatistics() {
 
             <UsageStatistics title="Daily Summary" summaryData={GetSummaryData()}/>
 
-            <UsagePredictions InfoText={PredictionsInfoText.DailyInfoText} />
+            <UsagePredictions predictionsInfo={PredictionsInfo.Daily} usageData={usageData} />
             
             <UsageLimit usageData={usageData} />
         </div>

@@ -2,7 +2,7 @@ import UsageGraph from "../../components/ui/UsageGraph";
 import UsageStatistics from "../../components/ui/UsageStatistics";
 import UsagePredictions from "../../components/ui/UsagePredictions";
 import UsageLimit from "../../components/ui/UsageLimit";
-import { MonthlyGraphConfig, PredictionsInfoText } from "../../data/constants";
+import { MonthlyGraphConfig, PredictionsInfo } from "../../data/constants";
 import { SettingsContext } from '../../pages/Settings/SettingsContext';
 import { useContext } from 'react';
 
@@ -48,7 +48,7 @@ function MonthlyStatistics() {
 
             <UsageStatistics title="Monthly Summary" summaryData={GetSummaryData()} />
 
-            <UsagePredictions InfoText={PredictionsInfoText.MonthlyInfoText} />
+            <UsagePredictions predictionsInfo={PredictionsInfo.Monthly} usageData={usageData} />
             
             <UsageLimit usageData={usageData} />
         </div>

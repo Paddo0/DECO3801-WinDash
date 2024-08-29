@@ -29,13 +29,11 @@ function UsageLimit(props) {
                 </div>
                 
                 <div className='UsageLimitProgressBar'>
-                    <div className='Progressbar' >
-                        <CircularProgressbar 
-                            value={props.usageData.powerUsage / props.usageData.usageLimit * 100} 
-                            text={(props.usageData.powerUsage / props.usageData.usageLimit * 100).toFixed(1) + '%'} 
-                            strokeWidth={10} 
-                        />
-                    </div>
+                    <CircularProgressbar 
+                        value={props.usageData.powerUsage / props.usageData.usageLimit * 100} 
+                        text={(props.usageData.powerUsage / props.usageData.usageLimit * 100).toFixed(1) + '%'} 
+                        strokeWidth={10} 
+                    />
                 </div>
             </div>
         </div>

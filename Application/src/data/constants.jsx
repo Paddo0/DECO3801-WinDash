@@ -69,7 +69,14 @@ export const MonthlyGraphConfig = {
     format: "dd MMM"
 }
 
-export const PredictionsInfoText = {
-    DailyInfoText: "Generate the predicted usage for the remainder of the day using our AI Model trained from your usage patterns.",
-    MonthlyInfoText: "Generate the predicted usage for the remainder of the quarter / month using algorithms based on your usage patterns."
+export const PredictionsInfo = {
+    Daily:
+    {
+        InfoText: "Generate the predicted usage for the remainder of the day using our AI Model trained from your usage patterns.",
+        prediction: 6.2, // Dummy data / default value
+    },
+    Monthly: {
+        InfoText: "Generate the predicted usage for the remainder of the quarter / month using algorithms based on your usage patterns.",
+        prediction: 153.4, // Dummy data / default value
+    }
 }

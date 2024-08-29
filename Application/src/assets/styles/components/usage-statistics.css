@@ -56,9 +56,11 @@
 .UsageStatisticsLabels > p {
     font-size: 18px;
     margin-left: 20%;
+    color: var(--navbar-background-col);
 }
 
 .UsageStatisticsValues > p {
     font-size: 18px;
     text-align: center;
+    color: var(--navbar-background-col);
 }
