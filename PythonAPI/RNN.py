@@ -17,16 +17,17 @@ df = pd.read_csv('PythonAPI\\data\\household_power_consumption.txt', sep=';')
 
 df['Global_intensity'] = pd.to_numeric(df['Global_intensity'], errors='coerce')
 df['Global_intensity'] = df['Global_intensity'].astype(float)
+prev = df['Global_intensity'][::60]
 
 scaler = MinMaxScaler(feature_range=(-1, 1))
-values = df['Global_intensity'][:10000]
+values = prev[:100]
 df['Global_intensity'] = scaler.fit_transform(df['Global_intensity'].values.reshape(-1,1))
-V_ten = torch.FloatTensor(df['Global_intensity'][:10000]).view(-1).to(device)
+V_ten = torch.FloatTensor(prev[:100].to_numpy()).view(-1).to(device)
 
 
 # TODO Prepare the input and target sequences
 # look-back period
-look_back = 240
+look_back = 24
 
 def create_inout_sequences(input_data, tw):
     "Creates input and output sequences out of a Tensor"
@@ -47,8 +48,8 @@ class LSTM(nn.Module):
         self.hidden_layer_size = hidden_size
         self.lstm = nn.LSTM(input_size, hidden_size).to(device)
         self.linear = nn.Linear(hidden_size, output_size).to(device)
-        self.hidden_cell = (torch.zeros(2, 1, self.hidden_layer_size).to(device),
-                            torch.zeros(2, 1, self.hidden_layer_size).to(device))
+        self.hidden_cell = (torch.zeros(1, 1, self.hidden_layer_size).to(device),
+                            torch.zeros(1, 1, self.hidden_layer_size).to(device))
 
 
     def forward(self, input_seq):
@@ -70,10 +71,10 @@ model = LSTM(input_size, hidden_size, output_size).to(device)
 
 # TODO Selct appropriate loss criterion and optimizer 
 criterion = nn.MSELoss().to(device)
-optimizer = torch.optim.AdamW(model.parameters(), lr=0.001)
+optimizer = torch.optim.AdamW(model.parameters(), lr=0.01)
 
 # TODO determine sufficient number of epochs 
-epochs = 20
+epochs = 50
 
 # Training Loop 
 
@@ -89,36 +90,36 @@ def train(epochs):
 
             single_loss = criterion(y_pred, labels)
             single_loss.backward()
+            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
             optimizer.step()
 
-        if i % 1 == 0:
+        if i % 2 == 0:
             print(f'Epoch {i} loss: {single_loss.item()}')
 
     torch.save(model.state_dict(), 'model_weights.pth')
 
     print(f'Epoch {i} loss: {single_loss.item()}')
 
-def test():
+def test(inputs):
     model.load_state_dict(torch.load('model_weights.pth'))
 
     model.eval()
 
-    test_inputs = V_ten[-look_back:].tolist()
-
     for i in range(look_back):
-        seq = torch.FloatTensor(test_inputs[-look_back:].to(device))
+        seq = torch.FloatTensor(inputs[-look_back:]).to(device)
         with torch.no_grad():
             model.hidden_cell = (torch.zeros(1, 1, model.hidden_layer_size).to(device),
                                 torch.zeros(1, 1, model.hidden_layer_size).to(device))
-            test_inputs.append(model(seq).item())
+            inputs.append(model(seq).item())
 
     # Inverse transform the predicted values to original scale
-    predicted_values = scaler.inverse_transform(np.array(test_inputs[look_back:] ).reshape(-1, 1))
+    predicted_values = scaler.inverse_transform(np.array(inputs[look_back:] ).reshape(-1, 1))
+    print(predicted_values)
 
     # Plot the results
     import matplotlib.pyplot as plt
 
-    plt.plot(values, label='Actual Data')
+    plt.plot(scaler.inverse_transform(values.to_numpy().reshape(-1, 1)), label='Actual Data')
     plt.plot(np.arange(len(values), len(values) + look_back), predicted_values, label='Predictions')
     plt.legend()
     plt.show()
@@ -130,4 +131,4 @@ def get_pred():
     return [0,0,0,0,0]
 
 train(epochs)
-test()
+test(V_ten[-look_back:].tolist())
