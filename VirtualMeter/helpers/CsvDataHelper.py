@@ -1,14 +1,20 @@
 import numpy as np
 import sys
-from helpers.DatabaseMutationHelper import *
+from VirtualMeter.helpers.DatabaseMutationHelper import *
 
 
-def LoadCsvData(db, meterId, filepath):
+def GetData(filepath):
     # Loading in data
     data = np.loadtxt(filepath, dtype=type("e"), delimiter=';', skiprows=1)
 
     # Removing invalid rows
     data = data[data[:, 2] != "?"]
+    return data
+
+
+def LoadCsvData(db, meterId, filepath):
+    # Getting csv data
+    data = GetData(filepath)
 
     # Defining the final day to save to daily collection
     finalDay = datetime.datetime(2010, 11, 26)

@@ -182,8 +182,21 @@ def ClearAllData(db, meterId):
 
 
 def ClearDailyFromTime(db, meterId: str, time: datetime):
+    """
+    Given a time of day, clears all data from dailyData after that point
+    :param db: Database reference to apply changes to
+    :param meterId: Meter to clear daily data from
+    :param time: Time of day to clear data after
+    """
+    # I recommend getting the date variable from the dailyData to avoid having to specify in time variable
     return
 
 
 def ClearOverallFromDate(db, meterId: str, date: datetime):
+    """
+    Given a date, removes all data summaries from overallData after that date
+    :param db: Database reference to apply changes to
+    :param meterId: Meter to clear daily summaries from
+    :param date: Date of year to clear daily summaries after
+    """
     return
