@@ -1,0 +1,15 @@
+
+/* Dropdown selector styles */
+.Dropdown {
+    margin: auto;
+    margin-top: 0px;
+}
+
+.Dropdown > Select {
+    font-size: 14px;
+    padding: 8px;
+    border-radius: 5px;
+
+    color: #f8dc69;
+    background-color: #3b3d44;
+}

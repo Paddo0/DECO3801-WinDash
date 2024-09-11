@@ -1,6 +1,7 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import { GetDefaultSettings, SettingsContext } from "./SettingsContext";
 import MeterDisplay from "./MeterDisplay";
+import MeterInput from "../../components/form/MeterInput";
 
 /**
  * Base settings page component
@@ -20,8 +21,7 @@ function Settings() {
 
           <br />
 
-          {/* TODO - Add meter id pop-up functionailty */}
-          <button className="AddMeterButton" >Add Meter Id</button>
+          <MeterInput button={<button className="AddMeterButton" >Add Meter Id</button>} />
         </div>;
   
       // Defining meter display if meter id is defined

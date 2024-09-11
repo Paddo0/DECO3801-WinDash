@@ -1,0 +1,73 @@
+.dashboard {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    padding: 20px; 
+    height: 100vh; /* Ensure the dashboard takes up the full viewport height */
+    box-sizing: border-box; 
+  }
+  
+  .header {
+    padding: 10px;
+    background-color: #34495E;
+    color: white;
+    text-align: center;
+    border-radius: 10px;
+  }
+  
+  .main-content {
+    flex-grow: 1;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 20px;
+    gap: 20px; /* Add some space between the cards */
+  }
+  
+  .card {
+    width: 250px; 
+    height: 420px; 
+    background-color: #ECF0F1;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add subtle shadow effect*/
+  }
+  
+  .circle {
+    width: 120px; 
+    height: 120px;
+    border-radius: 50%;
+    background-color: #3498DB;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px auto;
+    font-size: 1.5rem; /* Increase font size for visibility */
+  }
+  
+  .footer {
+    display: flex;
+    justify-content: space-around;
+    background-color: white; /* Match footer background with the main background */
+    padding: 20px; /* Increase padding to accommodate larger buttons */
+  }
+  
+  .footer-button {
+    background-color: #2C3E50;
+    color: white;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for buttons */
+    cursor: pointer; /* Add cursor pointer for better UX */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+  }
+  
+  .footer-button:hover {
+    background-color: #1a242f; /* Darker blue on hover */
+  }
+  

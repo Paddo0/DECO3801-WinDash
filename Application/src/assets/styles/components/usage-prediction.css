@@ -1,0 +1,110 @@
+
+/* Predictions page container */
+.UsagePredictions {
+    width: 60%;
+    height: 24%;
+    margin-left: 5%;
+    margin-right: var(--statistics-margin);
+    margin-bottom: 5%;
+    overflow: hidden;
+    display: flex;
+
+    /* Border styles */
+    border: 1px solid black;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.UsagePredictionsBar {
+    display: flex;
+    height: 20%;
+    width: 100%;
+    justify-content: center;
+
+    background-color: var(--navbar-background-col);
+    border-radius: 0 0 10px 0;
+}
+
+.UsagePredictionsBar > p {
+    margin-top: auto;
+    margin-bottom: auto;
+    text-align: left;
+    font-size: 24px;
+    font-weight: bold;
+    text-wrap: nowrap;
+    color: var(--navbar-icon-col-hex);
+}
+
+.UsagePredictionsColumn {
+    height: 100%;
+    width: 33%;
+    position: relative;
+    text-align: center;
+}
+
+.UsagePredictionsColumn > p {
+    margin-left: 5%;
+    margin-right: 5%;
+    font-size: 16px;
+    max-height: 40%;
+    overflow: hidden;
+    text-align: left;
+}
+
+.UsagePredictionsButton {
+    margin: auto;
+    width: 100%;
+    position: absolute;
+    bottom: 15%;
+    justify-content: center;
+}
+
+.UsagePredictionsButton > button {
+    height: 38px;
+    width: 50%;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 2px 4px;
+    background-color: #dfdfdf;
+}
+
+.UsagePredictionsColumn > h1 {
+    margin-top: 3%;
+    font-size: 28px;
+    color: var(--navbar-background-col);
+}
+
+.UsagePredictionsColumn  h3 {
+    margin-top: 10%;
+    color: var(--navbar-background-col);
+    font-size: 32px;
+}
+
+/* Progress bar styles */
+.UsagePredictionsDisplay {
+    width: 100%;
+    height: 70%;
+    display: flex;
+}
+
+.UsagePredictionsContent {
+    height: 100%;
+    width: 50%;
+    text-align: center;
+    position: relative;
+}
+
+.UsagePredictionsText {
+    position: absolute;
+    width: 100%;
+    top: 40%;
+    transform: translateY(-50%);
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--navbar-background-col);
+}
+
+.UsagePredictionsProgressBar {
+    height: 100%;
+    width: 40%;
+    margin: auto;
+}
