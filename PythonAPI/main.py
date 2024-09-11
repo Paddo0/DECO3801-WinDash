@@ -1,13 +1,12 @@
-
 from flask import Flask, request, jsonify
 import firebase_admin
 from firebase_admin import credentials, firestore
 #from firebase_config import db
 from RNN import get_pred
-
-
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "http://localhost:3002"}})
 
 # Path to the service account key 
 #cred = credentials.Certificate('path-service-account')
@@ -30,22 +29,17 @@ def post_prediction():
 
 @app.route('/pred', methods=['GET'])
 def get_data():
-    # TODO - Implement a method to retreive the real time data from the database 
-    prediction = get_pred()
-
+    # TODO - Implement a method to retrieve real-time data from the database 
     try:
-         pass
+        prediction = get_pred()  # Call the get_pred function from RNN
+        print(f"Prediction from get_pred: {prediction}")
+        return jsonify({"prediction": prediction})  # Return the prediction result
     except Exception as e:
-            return f"An Error Occurred: {e}", 400
-    
-    return f"\nFirst prediction is {prediction}"
+        return f"An Error Occurred: {e}", 400
 
 def main():
-    # TODO - Implement a python api using flask or any other api tool to return machine learning predictions
+    # TODO - Implement a python API using Flask or any other API tool to return machine learning predictions
     print("TODO")
 
-     
-
-
 if __name__ == "__main__":
-    main()
+    app.run(debug=True)

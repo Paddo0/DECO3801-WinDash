@@ -128,7 +128,7 @@ def test(inputs):
     
 def get_pred():
     # currently a vector of zeros as test 
-    return [0,0,0,0,0]
+    return 5
 
 train(epochs)
 test(V_ten[-look_back:].tolist())
