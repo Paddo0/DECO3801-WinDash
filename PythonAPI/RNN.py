@@ -10,7 +10,7 @@ from torch.autograd import Variable
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 #training data import 
-df = pd.read_csv('PythonAPI\\data\\household_power_consumption.txt', sep=';')
+df = pd.read_csv('/Users/songyutong/Downloads/household_power_consumption.txt', sep=';')
 #print(df["Voltage"])
 
 # Normalization, using mean 0 var 1
