@@ -1,5 +1,5 @@
 import constants
-from DatabaseMutations import *
+from helpers.DatabaseMutationHelper import *
 from LoadFromCsv import *
 import firebase_admin
 from firebase_admin import credentials

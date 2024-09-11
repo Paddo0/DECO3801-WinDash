@@ -180,3 +180,10 @@ def ClearAllData(db, meterId):
 
     return
 
+
+def ClearDailyFromTime(db, meterId: str, time: datetime):
+    return
+
+
+def ClearOverallFromDate(db, meterId: str, date: datetime):
+    return
