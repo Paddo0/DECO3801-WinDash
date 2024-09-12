@@ -10,7 +10,7 @@ from torch.autograd import Variable
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Load training data
-df = pd.read_csv('/Users/songyutong/Downloads/household_power_consumption.txt', sep=';')
+df = pd.read_csv('PythonAPI\\data\\household_power_consumption.txt', sep=';')
 
 # Convert 'Global_intensity' to numeric
 df['Global_intensity'] = pd.to_numeric(df['Global_intensity'], errors='coerce')
