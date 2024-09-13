@@ -131,5 +131,5 @@ def get_pred():
     return predicted_values[-1][0]  # Return the last predicted value
 
 # Call the training process
-train(epochs)
+#train(epochs)
 test(V_ten[-look_back:].tolist())

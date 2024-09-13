@@ -36,7 +36,8 @@ def get_data():
         return jsonify({"prediction": prediction})  # Return the prediction result
     except Exception as e:
         return f"An Error Occurred: {e}", 400
-
+    
+    
 def main():
     # TODO - Implement a python API using Flask or any other API tool to return machine learning predictions
     print("TODO")
