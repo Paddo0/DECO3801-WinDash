@@ -6,7 +6,7 @@ from RNN import get_pred
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "http://localhost:3002"}})
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # Path to the service account key 
 #cred = credentials.Certificate('path-service-account')
@@ -27,6 +27,21 @@ def post_prediction():
     except Exception as e:
         return f"An Error Occurred: {e}", 400
 
+@app.route('/prediction', methods=['GET'])
+def get_prediction():
+    try:
+        prediction = get_pred()  # 调用 RNN 中的预测函数
+        print(f"Prediction from get_pred: {prediction}")
+        return jsonify({"prediction": prediction})  # 返回预测结果
+    except Exception as e:
+        return f"An Error Occurred: {e}", 400
+
+
+@app.route('/data', methods=['GET'])
+def get_data():
+    return "Database integration pending"
+
+"""
 @app.route('/pred', methods=['GET'])
 def get_data():
     # TODO - Implement a method to retrieve real-time data from the database 
@@ -36,11 +51,12 @@ def get_data():
         return jsonify({"prediction": prediction})  # Return the prediction result
     except Exception as e:
         return f"An Error Occurred: {e}", 400
+"""
     
-    
+
 def main():
     # TODO - Implement a python API using Flask or any other API tool to return machine learning predictions
     print("TODO")
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host='127.0.0.1', port=5000)

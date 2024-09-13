@@ -7,7 +7,7 @@ function UsagePredictions(props) {
 
     const handlePredictionClick = async () => {
         try {
-            const response = await fetch("http://127.0.0.1:5000/pred");
+            const response = await fetch("http://127.0.0.1:5000/prediction");
             const data = await response.json();
             console.log("Response received:", data);
             setPrediction(data.prediction);

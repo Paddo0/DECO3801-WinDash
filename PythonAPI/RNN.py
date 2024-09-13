@@ -12,15 +12,14 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # Load training data
 df = pd.read_csv('/Users/songyutong/Downloads/household_power_consumption.txt', sep=';')
 
-# Convert 'Global_intensity' to numeric
-df['Global_intensity'] = pd.to_numeric(df['Global_intensity'], errors='coerce')
-df['Global_intensity'] = df['Global_intensity'].astype(float)
-prev = df['Global_intensity'][::60]
+df['Global_active_power'] = pd.to_numeric(df['Global_active_power'], errors='coerce')
+df['Global_active_power'] = df['Global_active_power'].astype(float)
+prev = df['Global_active_power'][::60]
 
 # Normalize the data
 scaler = MinMaxScaler(feature_range=(-1, 1))
 values = prev[:100]
-df['Global_intensity'] = scaler.fit_transform(df['Global_intensity'].values.reshape(-1,1))
+df['Global_active_power'] = scaler.fit_transform(df['Global_active_power'].values.reshape(-1,1))
 V_ten = torch.FloatTensor(prev[:100].to_numpy()).view(-1).to(device)
 
 # Prepare input and target sequences
@@ -90,7 +89,12 @@ def train(epochs):
     print(f'Final Epoch {epochs} loss: {single_loss.item()}')
 
 # Testing (Prediction) function
+# 全局变量保存 test 生成的预测值
+predicted_values_global = None
+
+# test 方法生成预测值并保存到全局变量
 def test(inputs):
+    global predicted_values_global  # 使用全局变量
     model.load_state_dict(torch.load('model_weights.pth'))
     model.eval()
 
@@ -105,6 +109,7 @@ def test(inputs):
 
     # Inverse transform predicted values back to original scale
     predicted_values = scaler.inverse_transform(np.array(predictions).reshape(-1, 1))
+    predicted_values_global = predicted_values  # 保存预测结果到全局变量
     print(predicted_values)
 
     # Plot the results
@@ -114,21 +119,14 @@ def test(inputs):
     plt.show()
     plt.savefig('prediction.png')
 
-# Flask Prediction API
+# Flask Prediction API 直接返回 test 生成的第一个预测值
 def get_pred():
-    model.load_state_dict(torch.load('model_weights.pth'))
-    model.eval()
+    global predicted_values_global
+    if predicted_values_global is not None:
+        return predicted_values_global[0][0]  # 返回第一个预测值
+    else:
+        return "No prediction available yet"  # 如果没有预测值
 
-    inputs = V_ten[-look_back:].tolist()  # Use the last 'look_back' values for prediction
-    for i in range(look_back):
-        seq = torch.FloatTensor(inputs[-look_back:]).to(device)
-        with torch.no_grad():
-            model.hidden_cell = (torch.zeros(1, 1, model.hidden_layer_size).to(device),
-                                torch.zeros(1, 1, model.hidden_layer_size).to(device))
-            inputs.append(model(seq).item())
-    
-    predicted_values = scaler.inverse_transform(np.array(inputs[-look_back:]).reshape(-1, 1))
-    return predicted_values[-1][0]  # Return the last predicted value
 
 # Call the training process
 #train(epochs)
