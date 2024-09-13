@@ -17,11 +17,13 @@ df = pd.read_csv('PythonAPI\\data\\household_power_consumption.txt', sep=';')
 
 df['Global_intensity'] = pd.to_numeric(df['Global_intensity'], errors='coerce')
 df['Global_intensity'] = df['Global_intensity'].astype(float)
-prev = df['Global_intensity'][::60]
+df['Global_int_avg'] = [np.mean(df['Global_intensity'][i*60:i*60 + 60]) for i in range(len(df['Global_intensity']/60 - 1))]
+prev = df['Global_int_avg']
+print(prev)
 
 scaler = MinMaxScaler(feature_range=(-1, 1))
 values = prev[:100]
-df['Global_intensity'] = scaler.fit_transform(df['Global_intensity'].values.reshape(-1,1))
+df['Global_int_avg'] = scaler.fit_transform(df['Global_int_avg'].values.reshape(-1,1))
 V_ten = torch.FloatTensor(prev[:100].to_numpy()).view(-1).to(device)
 
 
@@ -130,5 +132,5 @@ def get_pred():
     # currently a vector of zeros as test 
     return [0,0,0,0,0]
 
-train(epochs)
-test(V_ten[-look_back:].tolist())
+#train(epochs)
+test(prev[:24].to_list())
