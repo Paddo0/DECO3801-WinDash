@@ -26,7 +26,7 @@
     margin-top: auto;
     margin-bottom: auto;
     text-align: left;
-    font-size: 24px;
+    font-size: 1.3vw;
     font-weight: bold;
     text-wrap: nowrap;
     color: var(--navbar-icon-col-hex);
@@ -50,7 +50,7 @@
     width: 100%;
     top: 40%;
     transform: translateY(-50%);
-    font-size: 24px;
+    font-size: 1.3vw;
     font-weight: bold;
     color: var(--navbar-background-col);
 }
@@ -64,9 +64,10 @@
 }
 
 .UsageLimitButton button {
-    height: 38px;
+    height: 4vh;
     width: 50%;
     border-radius: 5px;
+    font-size: 0.7vw;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 2px 4px;
     background-color: #dfdfdf;
 }
