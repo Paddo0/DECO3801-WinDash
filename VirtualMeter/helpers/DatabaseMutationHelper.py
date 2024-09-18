@@ -189,6 +189,23 @@ def ClearDailyFromTime(db, meterId: str, time: datetime):
     :param time: Time of day to clear data after
     """
     # I recommend getting the date variable from the dailyData to avoid having to specify in time variable
+    # Get the current daily data
+    doc_ref = db.collection("dailyData").document(meterId)
+    daily_data = doc_ref.get().to_dict()
+
+    if daily_data is not None and "seriesData" in daily_data:
+        series_data = daily_data["seriesData"]
+
+        # Filter the entries based on the given time - NOT SURE IF I NEED TO CHECK EVERY ENTRY, MIGHT BE ABLE TO FIND FIRST ENTRY AND REMOVE ALL AFTER IT
+        filtered_data = []
+        for entry in series_data:
+            if entry['Date'] <= time:
+                filtered_data.append(entry)
+
+
+        # Update the database with the filtered data
+        doc_ref.update({"seriesData": filtered_data})
+
     return
 
 
@@ -199,4 +216,21 @@ def ClearOverallFromDate(db, meterId: str, date: datetime):
     :param meterId: Meter to clear daily summaries from
     :param date: Date of year to clear daily summaries after
     """
+    # Get the current overall data
+    doc_ref = db.collection("overallData").document(meterId)
+    overall_data = doc_ref.get().to_dict()
+
+    if overall_data is not None and "data" in overall_data:
+        data = overall_data["data"]
+
+        # Filter the summaries based on the given date - NOT SURE IF I NEED TO CHECK EVERY ENTRY, MIGHT BE ABLE TO FIND FIRST ENTRY AND REMOVE ALL AFTER IT
+        filtered_data = []
+        for entry in data:
+            if entry['Date'] <= date:
+                filtered_data.append(entry)
+
+
+        # Update the database with the filtered data
+        doc_ref.update({"data": filtered_data})
+
     return
