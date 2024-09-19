@@ -28,7 +28,7 @@
     margin-top: auto;
     margin-bottom: auto;
     text-align: center;
-    font-size: 24px;
+    font-size: 1.3vw;
     font-weight: bold;
     text-wrap: nowrap;
     color: var(--navbar-icon-col-hex);
@@ -54,13 +54,13 @@
 }
 
 .UsageStatisticsLabels > p {
-    font-size: 18px;
+    font-size: 0.95vw;
     margin-left: 20%;
     color: var(--navbar-background-col);
 }
 
 .UsageStatisticsValues > p {
-    font-size: 18px;
+    font-size: 0.95vw;
     text-align: center;
     color: var(--navbar-background-col);
 }

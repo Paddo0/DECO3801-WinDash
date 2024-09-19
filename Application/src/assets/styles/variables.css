@@ -3,20 +3,20 @@
     --background-col: #f5f5f5;
 
     /* NavBar */
-    --navbar-width: 72px;
-    --navbar-icon-spacing: 20px;
+    --navbar-width: 3.75vw;
+    --navbar-icon-spacing: 28%;
     --navbar-background-col: #23272f;
     --navbar-background-hover-col: #2b303a;
-    --navbar-icon-size: 45px;
+    --navbar-icon-size: 63%;
     /* To set color of svg filter go to: https://isotropic.co/tool/hex-color-to-css-filter/ */
     --navbar-icon-svg-filter: invert(74%) sepia(61%) saturate(367%) hue-rotate(4deg) brightness(98%) contrast(79%);
     --navbar-icon-col-hex: #dabe63;
 
 
     /* Settings Page */
-    --settings-header-size: 42px;
-    --settings-subheader-size: 28px;
-    --settings-meter-header-size: 24px;
+    --settings-header-size: 2vw;
+    --settings-subheader-size: 1.45vw;
+    --settings-meter-header-size: 1.257vw;
     --settings-padding-size: 3%;
     --settings-remove-button: #ff6161;
     --settings-remove-button-hover: #ff4d4d;

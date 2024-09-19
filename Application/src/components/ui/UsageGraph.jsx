@@ -47,7 +47,7 @@ function UsageGraph(props)
                                 title: "Power Consumption",
                                 minValue: 0,
                                 titleTextStyle: {
-                                    fontSize: 24,
+                                    fontSize: '1.4vw',
                                     fontName: 'Helvetica',
                                 },
                             },

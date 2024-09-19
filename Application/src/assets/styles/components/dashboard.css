@@ -2,18 +2,18 @@
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    background-color: white;
-    padding: 20px; 
+    padding: 1.4%;
     height: 100vh; /* Ensure the dashboard takes up the full viewport height */
     box-sizing: border-box; 
   }
   
   .header {
-    padding: 10px;
-    background-color: #34495E;
-    color: white;
+    padding: 0.8%;
+    background-color: var(--navbar-background-col);
+    color: var(--navbar-icon-col-hex);
     text-align: center;
-    border-radius: 10px;
+    font-size: 1.05vw;
+    border-radius: 5px;
   }
   
   .main-content {
@@ -21,45 +21,46 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
-    padding: 20px;
-    gap: 20px; /* Add some space between the cards */
+    padding: 1.4%;
+    font-size: 1.04vw;
+    gap: 1.4%; /* Add some space between the cards */
   }
   
   .card {
-    width: 250px; 
-    height: 420px; 
-    background-color: #ECF0F1;
-    padding: 20px;
+    width: 17%;
+    height: 80%;
+    background-color: #ebedee;
+    color: var(--navbar-background-col);
+    padding: 1.4%;
     border-radius: 10px;
     text-align: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add subtle shadow effect*/
   }
   
   .circle {
-    width: 120px; 
-    height: 120px;
+    width: 16.3vh;
+    height: 16.3vh;
     border-radius: 50%;
-    background-color: #3498DB;
-    color: white;
+    background-color: var(--navbar-icon-col-hex);
+    color: var(--navbar-background-col);
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 10px auto;
-    font-size: 1.5rem; /* Increase font size for visibility */
+    margin: 7% auto;
+    font-size: 1.5vw; /* Increase font size for visibility */
   }
   
   .footer {
     display: flex;
     justify-content: space-around;
-    background-color: white; /* Match footer background with the main background */
-    padding: 20px; /* Increase padding to accommodate larger buttons */
+    padding: 1.4%; /* Increase padding to accommodate larger buttons */
   }
   
   .footer-button {
-    background-color: #2C3E50;
-    color: white;
-    padding: 15px 30px;
-    font-size: 1.2rem;
+    background-color: var(--navbar-background-col);
+    color: var(--navbar-icon-col-hex);
+    padding: 2vh 2vw;
+    font-size: 1.25vw;
     border: none;
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for buttons */
@@ -68,6 +69,6 @@
   }
   
   .footer-button:hover {
-    background-color: #1a242f; /* Darker blue on hover */
+    background-color: #1c1f25; /* Darker blue on hover */
   }
   
