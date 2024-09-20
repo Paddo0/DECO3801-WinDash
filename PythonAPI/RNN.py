@@ -11,7 +11,7 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error  # Import fo
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Load training data
-df = pd.read_csv('/Users/songyutong/Downloads/household_power_consumption.txt', sep=';')
+df = pd.read_csv('/Users/songyutong/Downloads/household_power_consumption.txt', sep=';') # this file is loaded from local, make sure you substitue it"
 
 # Convert 'Global_active_power' column to numeric, set non-convertible values to NaN
 df['Global_active_power'] = pd.to_numeric(df['Global_active_power'], errors='coerce')

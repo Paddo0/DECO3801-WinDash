@@ -19,7 +19,7 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 
 @app.route('/add', methods=['POST'])
 def post_prediction():
-    # TODO - Implement a method to post next prediction/s to the app
+    # TODO - Implement a method to post next prediction(s) to the app
     try:
         data = request.get_json()
         number = data['number']
@@ -30,9 +30,9 @@ def post_prediction():
 @app.route('/prediction', methods=['GET'])
 def get_prediction():
     try:
-        prediction = get_pred()  # 调用 RNN 中的预测函数
+        prediction = get_pred()  # Call the prediction function from RNN
         print(f"Prediction from get_pred: {prediction}")
-        return jsonify({"prediction": prediction})  # 返回预测结果
+        return jsonify({"prediction": prediction})  # Return the prediction result
     except Exception as e:
         return f"An Error Occurred: {e}", 400
 
@@ -59,4 +59,4 @@ def main():
     print("TODO")
 
 if __name__ == "__main__":
-    app.run(debug=True, use_reloader=False, host='127.0.0.1', port=5000)
+    app.run(debug=True, use_reloader=False, host='127.0.0.1', port=5000) # the host is local laptop, be careful with that
