@@ -11,7 +11,7 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 # Path to the service account key 
 #cred = credentials.Certificate('path-service-account')
 
-# Initialization of the app 
+# Initialization of the app
 #firebase_admin.initialize_app(cred)
 
 # Initialize Firestore DB
@@ -52,7 +52,7 @@ def get_data():
     except Exception as e:
         return f"An Error Occurred: {e}", 400
 """
-    
+
 
 def main():
     # TODO - Implement a python API using Flask or any other API tool to return machine learning predictions
