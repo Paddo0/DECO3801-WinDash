@@ -1,6 +1,6 @@
 import numpy as np
 import sys
-from VirtualMeter.helpers.DatabaseMutationHelper import *
+from helpers.DatabaseMutationHelper import *
 
 
 def GetData(filepath):
