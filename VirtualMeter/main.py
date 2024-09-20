@@ -1,5 +1,7 @@
 import constants
 from helpers.DatabaseMutationHelper import *
+from helpers.DatabaseRetrieveHelper import *
+from helpers.DatabaseUpdateHelper import *
 from helpers.CsvDataHelper import *
 import firebase_admin
 from firebase_admin import credentials
@@ -80,6 +82,39 @@ def RunCommand(command, db):
 
     elif command == "load_from_csv":
         LoadCsvData(db, constants.meterId, constants.dataFilepath)
+
+    elif command == "clear_daily_from_time":
+        ClearDailyFromTime(db, constants.meterId, constants.minuteTime)
+
+    elif command == "clear_overall_from_date":
+        ClearOverallFromDate(db, constants.meterId, constants.summaryDate)
+
+    elif command == "get_minute_data":
+        print(GetMinuteData(db, constants.meterId, constants.minuteTime))
+
+    elif command == "get_day_summary":
+        print(GetDaySummary(db, constants.meterId, constants.summaryDate))
+
+    elif command == "get_latest_minute":
+        print(GetLatestMinute(db, constants.meterId))
+
+    elif command == "get_latest_day_summary":
+        print(GetLatestDaySummary(db, constants.meterId))
+
+    elif command == "get_all_daily":
+        print(GetAllDaily(db, constants.meterId))
+
+    elif command == "get_all_overall":
+        print(GetAllOverall(db, constants.meterId))
+
+    elif command == "update_daily_data_difference":
+        UpdateDailyDataDifference(db, constants.meterId, constants.currentDate - constants.minuteTime)
+
+    elif command == "update_daily_data_difference":
+        UpdateMonthlyDataDifference(db, constants.meterId, constants.currentDate - constants.summaryDate)
+
+    elif command == "update_all_datetime_data":
+        UpdateAllDatetimeData(db, constants.meterId, constants.currentDate)
 
 
 if __name__ == "__main__":
