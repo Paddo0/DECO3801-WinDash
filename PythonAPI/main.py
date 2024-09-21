@@ -1,18 +1,17 @@
-
 from flask import Flask, request, jsonify
 import firebase_admin
 from firebase_admin import credentials, firestore
 #from firebase_config import db
 from RNN import get_pred
-
-
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # Path to the service account key 
 #cred = credentials.Certificate('path-service-account')
 
-# Initialization of the app 
+# Initialization of the app
 #firebase_admin.initialize_app(cred)
 
 # Initialize Firestore DB
@@ -20,7 +19,7 @@ app = Flask(__name__)
 
 @app.route('/add', methods=['POST'])
 def post_prediction():
-    # TODO - Implement a method to post next prediction/s to the app
+    # TODO - Implement a method to post next prediction(s) to the app
     try:
         data = request.get_json()
         number = data['number']
@@ -28,24 +27,36 @@ def post_prediction():
     except Exception as e:
         return f"An Error Occurred: {e}", 400
 
+@app.route('/prediction', methods=['GET'])
+def get_prediction():
+    try:
+        prediction = get_pred()  # Call the prediction function from RNN
+        print(f"Prediction from get_pred: {prediction}")
+        return jsonify({"prediction": prediction})  # Return the prediction result
+    except Exception as e:
+        return f"An Error Occurred: {e}", 400
+
+
+@app.route('/data', methods=['GET'])
+def get_data():
+    return "Database integration pending"
+
+"""
 @app.route('/pred', methods=['GET'])
 def get_data():
-    # TODO - Implement a method to retreive the real time data from the database 
-    prediction = get_pred()
-
+    # TODO - Implement a method to retrieve real-time data from the database 
     try:
-         pass
+        prediction = get_pred()  # Call the get_pred function from RNN
+        print(f"Prediction from get_pred: {prediction}")
+        return jsonify({"prediction": prediction})  # Return the prediction result
     except Exception as e:
-            return f"An Error Occurred: {e}", 400
-    
-    return f"\nFirst prediction is {prediction}"
+        return f"An Error Occurred: {e}", 400
+"""
+
 
 def main():
-    # TODO - Implement a python api using flask or any other api tool to return machine learning predictions
+    # TODO - Implement a python API using Flask or any other API tool to return machine learning predictions
     print("TODO")
 
-     
-
-
 if __name__ == "__main__":
-    main()
+    app.run(debug=True, use_reloader=False, host='127.0.0.1', port=5000) # the host is local laptop, be careful with that
