@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from firebase_admin import firestore
+from helpers.CalculationHelper import *
 
 
 def AddMeter(db, meterId):
@@ -320,4 +321,46 @@ def MoveDailyDataToPreviousDay(db, meterId: str):
     else:
         print(f"No daily data found for meterId {meterId}.")
 
+    return
+
+def CalculateAndSaveOverallData(db, meterId: str):
+    """
+    Calculates the daily summary from the dailyData collection, saves it to overallData and then moves the daily data to previousDayDailyData
+    :param db: Database reference to apply changes to
+    :param meterId: Meter ID to identify which document to calculate and save
+    """
+    # Get the current day's data from the dailyData collection
+    doc_ref_daily = db.collection("dailyData").document(meterId)
+    daily_data_doc = doc_ref_daily.get()
+
+    if daily_data_doc.exists:
+        daily_data = daily_data_doc.to_dict()
+        series_data = daily_data.get('seriesData', [])
+
+        if series_data:
+            # Call CalculateDaySummary to get the daily summary from minute-level data
+            average_intensity, max_intensity, min_intensity, total_consumption_kWh = CalculateDaySummary(series_data)
+
+            day_summary_entry = {
+                "AverageIntensity": average_intensity,
+                "MaximumIntensity": max_intensity,
+                "MinimumIntensity": min_intensity,
+                "TotalConsumption": total_consumption_kWh,
+                "Date": daily_data.get('currentDate', datetime.datetime.now())
+            }
+
+            # Save the calculated summary to the overallData collection
+            doc_ref_overall = db.collection("overallData").document(meterId)
+            doc_ref_overall.update({
+                "data": firestore.ArrayUnion([day_summary_entry])
+            })
+
+            # Move current day's data to previousDayDailyData
+            MoveDailyDataToPreviousDay(db, meterId)
+
+        else:
+            print(f"No series data found for {meterId}.")
+    else:
+        print(f"No daily data found for {meterId}.")
+    
     return
