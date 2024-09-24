@@ -19,8 +19,14 @@ def AddMeter(db, meterId):
         "data": [],
     }
 
+    previousDayDailyDataSetup = {
+        "yesterdayDate": datetime.datetime.now(),
+        "seriesData": [],
+    }
+
     # Setting data
     db.collection("dailyData").document(meterId).set(dailySetup)
+    db.collection("previousDayDailyData").document(meterId).set(previousDayDailyDataSetup)
     db.collection("overallData").document(meterId).set(overallSetup)
 
     return
