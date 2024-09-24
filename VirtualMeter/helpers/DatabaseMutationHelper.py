@@ -67,6 +67,17 @@ def ClearTodayData(db, meterId):
 
     return
 
+def ClearYesterdayData(db, meterId):
+    """
+    Removes all data from the previousDayDailyData seriesData saved
+    :param db: database reference to apply changes to
+    :param meterId: meter to remove today's data from
+    """
+
+    # Setting seriesData to empty array
+    db.collection("previousDayDailyData").document(meterId).update({"seriesData": []})
+
+    return
 
 def AddMinuteArray(db, meterId, listOfData):
     """
