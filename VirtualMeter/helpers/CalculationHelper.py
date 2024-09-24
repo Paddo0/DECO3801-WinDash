@@ -1,7 +1,7 @@
 import datetime
 
 
-def CalculateDaySummary(minuteIntervals: list[datetime, float, float]) -> (float, float, float, float):
+def CalculateDaySummary(minuteIntervals: list[datetime.datetime, float, float]) -> (float, float, float, float):
     """
     Given a list of minute interval data, calculate the daily summary to be saved into overallData.
     :param minuteIntervals: List representation of dailyData seriesData array in form (Date, Intensity, Voltage)
@@ -42,3 +42,24 @@ def CalculateDaySummary(minuteIntervals: list[datetime, float, float]) -> (float
 
     # Return the calculated values
     return average_intensity, max_intensity, min_intensity, total_consumption_kWh
+
+def CalculateDaySummaryArray(days_data: list[list[tuple[datetime.datetime, float, float]]]) -> list[tuple[float, float, float, float]]:
+    """
+    Given a list of days, where each day contains minute interval data in the form (Date, Intensity, Voltage),
+    calculates the daily summary for each day using the CalculateDaySummary function and returns a list of daily summaries.
+    
+    :param days_data: List of lists, where each sublist represents a day's data. 
+                      Each sublist contains tuples in the form (Date, Intensity, Voltage).
+    :return: List of daily summaries, where each summary is a tuple (AverageIntensity, MaxIntensity, MinIntensity, TotalConsumption).
+    """
+    summaries = []
+
+    # Iterate through each day's data
+    for day_data in days_data:
+        # Use the existing CalculateDaySummary function for each day's data
+        summary = CalculateDaySummary(day_data)
+
+        # Append the calculated summary to the summaries list
+        summaries.append(summary)
+
+    return summaries
