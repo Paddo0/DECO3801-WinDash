@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, timedelta
 from firebase_admin import firestore
 
 
@@ -20,7 +20,7 @@ def AddMeter(db, meterId):
     }
 
     previousDayDailyDataSetup = {
-        "yesterdayDate": datetime.datetime.now(),
+        "yesterdayDate": datetime.now() - timedelta(days=1),
         "seriesData": [],
     }
 
@@ -137,6 +137,19 @@ def SetCurrentDay(db, meterId, date):
 
     return
 
+def SetYesterdayDay(db, meterId, date):
+    """
+    Sets the value of yesterdayDate within the previousDayDailyData collection
+    :param db: database reference to apply changes to
+    :param meterId: meter to set date for
+    :param date: date to set
+    """
+
+    # Updating value in database
+    db.collection("previousDayDailyData").document(meterId).update({"yesterdayDate": date})
+
+    return
+
 
 def AddDaySummary(db, meterId, date, summary):
     """
@@ -215,6 +228,7 @@ def ClearAllData(db, meterId):
     """
 
     ClearTodayData(db, meterId)
+    ClearYesterdayData(db, meterId)
     ClearOverallData(db, meterId)
 
     return
