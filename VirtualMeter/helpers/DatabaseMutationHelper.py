@@ -287,3 +287,37 @@ def ClearOverallFromDate(db, meterId: str, date: datetime):
         doc_ref.update({"data": filtered_data})
 
     return
+
+def MoveDailyDataToPreviousDay(db, meterId: str):
+    """
+    Moves the current day's data from the dailyData collection to the previousDayDailyData collection and clears dailyData
+    :param db: Database reference to apply changes to
+    :param meterId: Meter ID to identify which document to move
+    """
+    # Get the current day's data from the dailyData collection
+    doc_ref_daily = db.collection("dailyData").document(meterId)
+    daily_data_doc = doc_ref_daily.get()
+
+    if daily_data_doc.exists:
+        daily_data = daily_data_doc.to_dict()
+
+        # Move the daily data to the previousDayDailyData collection
+        doc_ref_previous_day = db.collection("previousDayDailyData").document(meterId)
+        
+        # Update the previous day's data with the current daily data (overwrite)
+        doc_ref_previous_day.set({
+            'yesterdayDate': daily_data.get('currentDate', datetime.datetime.now()),
+            'seriesData': daily_data.get('seriesData', [])
+        })
+
+        # Clear the current day's data in the dailyData collection
+        doc_ref_daily.update({
+            'seriesData': [],
+            'currentDate': datetime.datetime.now()  # Reset to today's date
+        })
+
+        print(f"Moved daily data to previousDayDailyData for meterId {meterId} and cleared dailyData.")
+    else:
+        print(f"No daily data found for meterId {meterId}.")
+
+    return

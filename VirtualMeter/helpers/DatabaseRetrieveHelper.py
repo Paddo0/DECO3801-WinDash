@@ -115,6 +115,23 @@ def GetAllDaily(db, meterId: str) -> (list[datetime, float, float]):
     # If no data is found, return an empty list
     return []
 
+def GetAllYesterdayDailyData(db, meterId: str) -> (list[datetime, float, float]):
+    """
+    Gets a list of all the previousDayDailyData seriesData array for a specified meter
+    :param db: Database reference to get data from
+    :param meterId: Document identifier representing meter to get data from
+    :return: List of previousDayDailyData seriesData array in the form List(Date, Intensity, Voltage)
+    """
+    # Get the daily data for the meter
+    doc_ref = db.collection("previousDayDailyData").document(meterId)
+    doc = doc_ref.get()
+
+    if doc.exists:
+        return doc.to_dict().get("seriesData", [])
+    
+    # If no data is found, return an empty list
+    return []
+
 
 def GetAllOverall(db, meterId: str) -> (list[datetime, float, float, float, float]):
     """
