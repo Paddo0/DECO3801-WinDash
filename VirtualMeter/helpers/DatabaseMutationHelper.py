@@ -101,6 +101,28 @@ def AddMinuteArray(db, meterId, listOfData):
 
     return
 
+def AddYesterdayMinuteArray(db, meterId, listOfData):
+    """
+    Adds a range of value to the previousDayDailyData seriesData array
+    :param db: database reference to apply changes to
+    :param meterId: meter to add series data to
+    :param listOfData: List of minute data in form (time, intensity, voltage)
+    """
+
+    # Unpacking list into entry format
+    listOfEntries = []
+    for (time, intensity, voltage) in listOfData:
+        listOfEntries.append({
+            "Date": time,
+            "Intensity": intensity,
+            "Voltage": voltage,
+        })
+
+    # Adding entries to database
+    db.collection("previousDayDailyData").document(meterId).update({"seriesData": firestore.ArrayUnion(listOfEntries)})
+
+    return
+
 
 def SetCurrentDay(db, meterId, date):
     """
