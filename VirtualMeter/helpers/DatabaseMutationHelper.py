@@ -21,7 +21,7 @@ def AddMeter(db, meterId):
     }
 
     previousDayDailyDataSetup = {
-        "yesterdayDate": datetime.now() - timedelta(days=1),
+        "yesterdayDate": datetime.datetime.now() - timedelta(days=1),
         "seriesData": [],
     }
 
@@ -238,30 +238,54 @@ def ClearAllData(db, meterId):
 def ClearDailyFromTime(db, meterId: str, time: datetime):
     """
     Given a time of day, clears all data from dailyData after that point
+    Combines the date from the currentDate in dailyData with the time provided in the 'time' argument
+    
     :param db: Database reference to apply changes to
     :param meterId: Meter to clear daily data from
-    :param time: Time of day to clear data after
+    :param time: Time of day (hour, minute, second) to clear data after
     """
-    # I recommend getting the date variable from the dailyData to avoid having to specify in time variable
+    # Ensure that the 'time' passed is timezone-naive
+    if time.tzinfo is not None:
+        time = time.replace(tzinfo=None)
+
     # Get the current daily data
     doc_ref = db.collection("dailyData").document(meterId)
     daily_data = doc_ref.get().to_dict()
 
-    if daily_data is not None and "seriesData" in daily_data:
+    if daily_data is not None and "seriesData" in daily_data and "currentDate" in daily_data:
         series_data = daily_data["seriesData"]
+        current_date = daily_data["currentDate"]
 
-        # Filter the entries based on the given time - NOT SURE IF I NEED TO CHECK EVERY ENTRY, MIGHT BE ABLE TO FIND FIRST ENTRY AND REMOVE ALL AFTER IT
+        # Ensure the current_date is timezone-naive
+        if current_date.tzinfo is not None:
+            current_date = current_date.replace(tzinfo=None)
+
+        # Combine the current date with the specified time to create a new datetime object
+        combined_datetime = datetime.datetime(
+            current_date.year, current_date.month, current_date.day,
+            time.hour, time.minute, time.second
+        )
+
+        # Filter the entries based on the combined datetime
         filtered_data = []
         for entry in series_data:
-            if entry['Date'] <= time:
-                filtered_data.append(entry)
+            entry_time = entry['Date']
 
+            # Ensure the entry time is timezone-naive
+            if entry_time.tzinfo is not None:
+                entry_time = entry_time.replace(tzinfo=None)
+
+            # Compare timezone-naive datetime objects
+            if entry_time <= combined_datetime:
+                filtered_data.append(entry)
 
         # Update the database with the filtered data
         doc_ref.update({"seriesData": filtered_data})
 
-    return
+    else:
+        print(f"Data not found or 'currentDate' missing for meterId {meterId}")
 
+    return
 
 def ClearOverallFromDate(db, meterId: str, date: datetime):
     """

@@ -14,7 +14,7 @@ def main():
     """
 
     # Command input to distinguish between functionality
-    command = "set_current_day"
+    command = "clear_daily_from_time"
 
     # Defines connection to firebase database
     database = Initialize()
@@ -50,8 +50,31 @@ def RunCommand(command, db):
     elif command == "clear_today_data":
         ClearTodayData(db, constants.meterId)
 
+    elif command == "clear_yesterday_data":
+        ClearYesterdayData(db, constants.meterId)
+
     elif command == "add_minute_array":
+        """
         AddMinuteArray(db, constants.meterId,
+                       list([[
+                            constants.minuteTime,
+                            constants.minuteIntensity,
+                            constants.minuteVoltage
+                       ]]))
+        """
+        array = [(datetime.datetime(2024, 9, 12, 5, 20), 10, 250),
+                 (datetime.datetime(2024, 9, 12, 5, 21), 20, 250),
+                 (datetime.datetime(2024, 9, 12, 5, 22), 20, 250),
+                 (datetime.datetime(2024, 9, 12, 5, 23), 20, 250),
+                 (datetime.datetime(2024, 9, 12, 5, 24), 30, 250),
+                 ]
+
+        # (time, intensity, voltage)
+
+        AddMinuteArray(db, constants.meterId, array)
+        
+    elif command == "add_yesterday_minute_array":
+        AddYesterdayMinuteArray(db, constants.meterId,
                        list([[
                             constants.minuteTime,
                             constants.minuteIntensity,
@@ -60,6 +83,10 @@ def RunCommand(command, db):
 
     elif command == "set_current_day":
         SetCurrentDay(db, constants.meterId,
+                      constants.currentDate)
+        
+    elif command == "set_yesterday_day":
+        SetYesterdayDay(db, constants.meterId,
                       constants.currentDate)
 
     elif command == "add_day_summary":
@@ -84,7 +111,8 @@ def RunCommand(command, db):
         LoadCsvData(db, constants.meterId, constants.dataFilepath)
 
     elif command == "clear_daily_from_time":
-        ClearDailyFromTime(db, constants.meterId, constants.minuteTime)
+        #ClearDailyFromTime(db, constants.meterId, constants.minuteTime)
+        ClearDailyFromTime(db, constants.meterId, datetime.datetime(2024, 9, 12, 5, 22))
 
     elif command == "clear_overall_from_date":
         ClearOverallFromDate(db, constants.meterId, constants.summaryDate)

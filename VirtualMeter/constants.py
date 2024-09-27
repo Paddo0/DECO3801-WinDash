@@ -7,7 +7,8 @@ import datetime
 dataFilepath = "data/household_power_consumption.csv"
 
 # MeterId to index database tables
-meterId = "1003253"
+#meterId = "1003253"
+meterId = "111"
 
 # Input Settings #
 # Daily Data
