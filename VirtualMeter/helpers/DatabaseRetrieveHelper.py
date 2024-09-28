@@ -3,12 +3,17 @@ import datetime
 
 def GetMinuteData(db, meterId: str, time: datetime) -> (float, float):
     """
-    Gets the minute data for a specific time of day from dailyData table
-    :param db: Database reference to get data from
-    :param meterId: Document identifier representing meter to get data from
-    :param time: Time of day to the get the data from
-    :return: Minute data values in form (Intensity, Voltage)
+    Gets the minute data for a specific time of day from the dailyData table.
+    Ensures that both 'time' and 'Date' entries are timezone-naive for comparison.
+    :param db: Database reference to get data from.
+    :param meterId: Document identifier representing meter to get data from.
+    :param time: Time of day to get the data from (should be timezone-naive).
+    :return: Minute data values in the form (Intensity, Voltage).
     """
+    # Ensure that the 'time' passed is timezone-naive
+    if time.tzinfo is not None:
+        time = time.replace(tzinfo=None)
+
     # Get the daily data for the meter
     doc_ref = db.collection("dailyData").document(meterId)
     doc = doc_ref.get()
@@ -18,21 +23,35 @@ def GetMinuteData(db, meterId: str, time: datetime) -> (float, float):
         
         # Find the specific time entry in the seriesData
         for entry in daily_data:
-            if entry["Date"] == time:
+            entry_time = entry["Date"]
+
+            # Ensure the entry time is timezone-naive
+            if entry_time.tzinfo is not None:
+                entry_time = entry_time.replace(tzinfo=None)
+
+            # Compare the timezone-naive datetime objects
+            if entry_time == time:
                 return entry["Intensity"], entry["Voltage"]
     
     # If the data for the specified time isn't found, return None
     return None, None
 
 
+
 def GetDaySummary(db, meterId: str, date: datetime) -> (float, float, float, float):
     """
-    Gets the daily summary data from the overallData table given a specific date
-    :param db: Database reference to get data from
-    :param meterId: Document identifier representing meter to get data from
-    :param date: Date to get data from
-    :return: Daily summary data for date specified in the form (AverageIntensity, MaxIntensity, MinIntensity, TotalConsumption)
+    Gets the daily summary data from the overallData table given a specific date.
+    Ensures both the input 'date' and 'Date' entries from Firestore are timezone-naive.
+    
+    :param db: Database reference to get data from.
+    :param meterId: Document identifier representing the meter to get data from.
+    :param date: Date to get data from (should be timezone-naive).
+    :return: Daily summary data for the date specified in the form (AverageIntensity, MaxIntensity, MinIntensity, TotalConsumption).
     """
+    # Ensure the input 'date' is timezone-naive
+    if date.tzinfo is not None:
+        date = date.replace(tzinfo=None)
+
     # Get the overall data for the meter
     doc_ref = db.collection("overallData").document(meterId)
     doc = doc_ref.get()
@@ -42,12 +61,20 @@ def GetDaySummary(db, meterId: str, date: datetime) -> (float, float, float, flo
         
         # Find the summary for the specific date
         for entry in overall_data:
-            if entry["Date"] == date:
+            entry_date = entry["Date"]
+
+            # Ensure the entry 'Date' is timezone-naive
+            if entry_date.tzinfo is not None:
+                entry_date = entry_date.replace(tzinfo=None)
+
+            # Compare timezone-naive datetime objects
+            if entry_date == date:
                 return (entry["AverageIntensity"], entry["MaximumIntensity"], 
                         entry["MinimumIntensity"], entry["TotalConsumption"])
     
     # If the summary for the specified date isn't found, return None
     return None, None, None, None
+
 
 
 def GetLatestMinute(db, meterId: str) -> (datetime, float, float):

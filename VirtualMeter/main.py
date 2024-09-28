@@ -14,7 +14,7 @@ def main():
     """
 
     # Command input to distinguish between functionality
-    command = "clear_daily_from_time"
+    command = "get_latest_minute"
 
     # Defines connection to firebase database
     database = Initialize()
@@ -95,11 +95,21 @@ def RunCommand(command, db):
                       constants.summaryData)
 
     elif command == "add_day_array_summary":
-        AddDayArraySummary(db, constants.meterId,
-                           list([[
-                               constants.summaryDate,
-                               constants.summaryData
-                           ]]))
+        ##AddDayArraySummary(db, constants.meterId,
+        ##                   list([[
+        ##                       constants.summaryDate,
+        ##                       constants.summaryData
+        ##                   ]]))
+        
+        array = [(datetime.datetime(2024, 9, 12), (1, 1, 1, 1)),
+                 (datetime.datetime(2024, 9, 13), (1, 1, 1, 1)),
+                 (datetime.datetime(2024, 9, 14), (1, 1, 1, 1)),
+                 (datetime.datetime(2024, 9, 15), (1, 1, 1, 1)),
+                 (datetime.datetime(2024, 9, 16), (1, 1, 1, 1)),
+                 (datetime.datetime(2024, 9, 17), (1, 1, 1, 1)),
+                 ]
+        
+        AddDayArraySummary(db, constants.meterId, array)
 
     elif command == "clear_overall_data":
         ClearOverallData(db, constants.meterId)
@@ -115,13 +125,13 @@ def RunCommand(command, db):
         ClearDailyFromTime(db, constants.meterId, datetime.datetime(2024, 9, 12, 5, 22))
 
     elif command == "clear_overall_from_date":
-        ClearOverallFromDate(db, constants.meterId, constants.summaryDate)
+        ClearOverallFromDate(db, constants.meterId, datetime.datetime(2024, 9, 14))
 
     elif command == "get_minute_data":
-        print(GetMinuteData(db, constants.meterId, constants.minuteTime))
+        print(GetMinuteData(db, constants.meterId, datetime.datetime(2024, 9, 12, 5, 21)))
 
     elif command == "get_day_summary":
-        print(GetDaySummary(db, constants.meterId, constants.summaryDate))
+        print(GetDaySummary(db, constants.meterId, datetime.datetime(2024, 9, 12)))
 
     elif command == "get_latest_minute":
         print(GetLatestMinute(db, constants.meterId))
@@ -143,6 +153,9 @@ def RunCommand(command, db):
 
     elif command == "update_all_datetime_data":
         UpdateAllDatetimeData(db, constants.meterId, constants.currentDate)
+
+    elif command == "move_daily_data_to_previous_daily_data":
+        MoveDailyDataToPreviousDay(db, constants.meterId)
 
 
 if __name__ == "__main__":

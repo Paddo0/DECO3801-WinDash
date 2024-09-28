@@ -294,6 +294,10 @@ def ClearOverallFromDate(db, meterId: str, date: datetime):
     :param meterId: Meter to clear daily summaries from
     :param date: Date of year to clear daily summaries after
     """
+    # Ensure that the 'date' passed is timezone-naive
+    if date.tzinfo is not None:
+        date = date.replace(tzinfo=None)
+
     # Get the current overall data
     doc_ref = db.collection("overallData").document(meterId)
     overall_data = doc_ref.get().to_dict()
@@ -301,12 +305,18 @@ def ClearOverallFromDate(db, meterId: str, date: datetime):
     if overall_data is not None and "data" in overall_data:
         data = overall_data["data"]
 
-        # Filter the summaries based on the given date - NOT SURE IF I NEED TO CHECK EVERY ENTRY, MIGHT BE ABLE TO FIND FIRST ENTRY AND REMOVE ALL AFTER IT
+        # Filter the summaries based on the given date
         filtered_data = []
         for entry in data:
-            if entry['Date'] <= date:
-                filtered_data.append(entry)
+            entry_date = entry['Date']
 
+            # Ensure the entry date is timezone-naive
+            if entry_date.tzinfo is not None:
+                entry_date = entry_date.replace(tzinfo=None)
+
+            # Compare timezone-naive datetime objects
+            if entry_date <= date:
+                filtered_data.append(entry)
 
         # Update the database with the filtered data
         doc_ref.update({"data": filtered_data})
