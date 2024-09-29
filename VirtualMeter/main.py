@@ -14,7 +14,7 @@ def main():
     """
 
     # Command input to distinguish between functionality
-    command = "get_latest_minute"
+    command = "calculate_and_save_overall_data"
 
     # Defines connection to firebase database
     database = Initialize()
@@ -82,8 +82,9 @@ def RunCommand(command, db):
                        ]]))
 
     elif command == "set_current_day":
-        SetCurrentDay(db, constants.meterId,
-                      constants.currentDate)
+        ##SetCurrentDay(db, constants.meterId,
+        ##              constants.currentDate)
+        SetCurrentDay(db, constants.meterId, datetime.datetime(2024, 9, 12))
         
     elif command == "set_yesterday_day":
         SetYesterdayDay(db, constants.meterId,
@@ -142,6 +143,9 @@ def RunCommand(command, db):
     elif command == "get_all_daily":
         print(GetAllDaily(db, constants.meterId))
 
+    elif command == "get_all_yesterday":
+        print(GetAllYesterdayDailyData(db, constants.meterId))
+
     elif command == "get_all_overall":
         print(GetAllOverall(db, constants.meterId))
 
@@ -157,6 +161,17 @@ def RunCommand(command, db):
     elif command == "move_daily_data_to_previous_daily_data":
         MoveDailyDataToPreviousDay(db, constants.meterId)
 
+    elif command == "calculate_summary":
+        array = [(datetime.datetime(2024, 9, 12, 5, 20), 10, 250),
+                 (datetime.datetime(2024, 9, 12, 5, 21), 20, 250),
+                 (datetime.datetime(2024, 9, 12, 5, 22), 20, 250),
+                 (datetime.datetime(2024, 9, 12, 5, 23), 20, 250),
+                 (datetime.datetime(2024, 9, 12, 5, 24), 30, 250),
+                 ]
+        print(CalculateDaySummary(array))
+
+    elif command == "calculate_and_save_overall_data":
+        (CalculateAndSaveOverallData(db, constants.meterId))
 
 if __name__ == "__main__":
     main()
