@@ -372,8 +372,9 @@ def CalculateAndSaveOverallData(db, meterId: str):
         series_data = daily_data.get('seriesData', [])
 
         if series_data:
+            transformed_series_data = transform_series_data(series_data)
             # Call CalculateDaySummary to get the daily summary from minute-level data
-            average_intensity, max_intensity, min_intensity, total_consumption_kWh = CalculateDaySummary(series_data)
+            average_intensity, max_intensity, min_intensity, total_consumption_kWh = CalculateDaySummary(transformed_series_data)
 
             # Get the current date from the daily data, or use today's date as a fallback
             current_date = daily_data.get('currentDate', datetime.datetime.now())
@@ -393,3 +394,21 @@ def CalculateAndSaveOverallData(db, meterId: str):
 
     return
 
+def transform_series_data(series_data):
+    """
+    Transforms the series_data from the Firestore format into a list of (datetime, float, float) tuples.
+    :param series_data: List of dictionaries retrieved from Firestore with 'Date', 'Intensity', and 'Voltage' keys.
+    :return: List of tuples in the form (datetime, intensity, voltage).
+    """
+    transformed_data = []
+    
+    for entry in series_data:
+        # Extract and ensure 'Date', 'Intensity', and 'Voltage' are in the right format
+        date = entry["Date"]  # This is already a datetime object
+        intensity = float(entry["Intensity"])  # Convert intensity to float
+        voltage = float(entry["Voltage"])      # Convert voltage to float
+        
+        # Append the tuple (datetime, intensity, voltage) to the transformed list
+        transformed_data.append((date, intensity, voltage))
+    
+    return transformed_data
