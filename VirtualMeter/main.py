@@ -14,7 +14,7 @@ def main():
     """
 
     # Command input to distinguish between functionality
-    command = "calculate_and_save_overall_data"
+    command = "extract_virtual_meter_csv_data"
 
     # Defines connection to firebase database
     database = Initialize()
@@ -172,6 +172,10 @@ def RunCommand(command, db):
 
     elif command == "calculate_and_save_overall_data":
         (CalculateAndSaveOverallData(db, constants.meterId))
+
+    elif command == "extract_virtual_meter_csv_data":
+        yesterday_daily_data, daily_data, overall_data, future_daily_data = ExtractVirtualMeterCsvData(db, constants.meterId, constants.dataFilepath, datetime.datetime(2024, 9, 25, 12))
+        print(overall_data)
 
 if __name__ == "__main__":
     main()

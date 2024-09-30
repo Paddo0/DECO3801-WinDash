@@ -223,7 +223,7 @@ def ClearOverallData(db, meterId):
 
 def ClearAllData(db, meterId):
     """
-    Clears both the overallData collection and dailyData collection array data for a given meter
+    Clears both the overallData collection, previousDayDailyData collection and dailyData collection array data for a given meter
     :param db: database reference to apply changes to
     :param meterId: meter to clear array data for
     """
