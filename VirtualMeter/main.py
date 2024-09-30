@@ -174,7 +174,7 @@ def RunCommand(command, db):
         (CalculateAndSaveOverallData(db, constants.meterId))
 
     elif command == "extract_virtual_meter_csv_data":
-        yesterday_daily_data, daily_data, overall_data, future_daily_data = ExtractVirtualMeterCsvData(db, constants.meterId, constants.dataFilepath, datetime.datetime(2024, 9, 25, 12))
+        yesterday_daily_data, daily_data, overall_data, future_daily_data = ExtractAllVirtualMeterCsvData(db, constants.meterId, constants.dataFilepath, datetime.datetime(2024, 9, 25, 12))
         print(overall_data)
 
 if __name__ == "__main__":

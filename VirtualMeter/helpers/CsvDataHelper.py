@@ -91,19 +91,16 @@ def LoadCsvData(db, meterId, filepath):
 
 import datetime
 
-def ExtractVirtualMeterCsvData(db, meterId, filepath, start_time):
+def ExtractAllVirtualMeterCsvData(filepath, start_time):
     """
-    Extracts virtual meter data from a CSV file, processes it, and organizes it into specific groups:
+    Extracts all virtual meter data from a CSV file, processes it, and organizes it into specific groups:
     - Data for the day before the start date
     - Data for the start date itself, split into minute intervals up to the start time (does not include data after start time)
     - Summarized data for all days before the start date
     - Data for all days and times after the start time
-
-    :param db: Reference to the database (currently not used but included for future use)
-    :param meterId: The ID of the meter (currently not used but included for future use)
+    The function applies a time shift of 14 years to align the historical dates in the CSV with current dates.
     :param filepath: The path to the CSV file containing the virtual meter data
     :param start_time: A `datetime` object representing the exact time from which the data processing should start
-
     :return: A tuple containing:
              - yesterday_daily_data: A list of tuples (time, intensity, voltage) for the day before the start date
              - daily_data: A list of tuples (time, intensity, voltage) for the start date up to the start time
@@ -122,7 +119,7 @@ def ExtractVirtualMeterCsvData(db, meterId, filepath, start_time):
     virtual_end_date = datetime.datetime(2024, 11, 26)  # Current virtual meter end date
     time_difference = virtual_end_date - date_end_date  # Time offset of 14 years
 
-    # Initialize data structures
+    # Initialise data structures
     overall_data = []  # List to store summaries of all days except the start day and day before
     yesterday_daily_data = []  # List to store minute-interval data for the day before the start date
     daily_data = []  # List to store minute-interval data for the start date to be uploaded directly to the DailyData table
@@ -172,3 +169,81 @@ def ExtractVirtualMeterCsvData(db, meterId, filepath, start_time):
 
     # Return the collected data
     return yesterday_daily_data, daily_data, overall_data, future_daily_data
+
+def ExtractFutureVirtualMeterCsvData(filepath, start_time):
+    """
+    Extracts virtual meter data from a CSV file and collects all data points that occur after the specified start time.
+    The function applies a time shift of 14 years to align the historical dates in the CSV with current dates.
+    :param filepath: The path to the CSV file containing the virtual meter data.
+    :param start_time: A `datetime` object representing the cutoff time. Only data points after this time will be collected.
+    :return: A list of tuples containing (time, intensity, voltage) for all times after the specified start_time.
+    """
+
+    # Load the CSV data from the given filepath
+    data = GetData(filepath)
+
+    # Define a time difference of 14 years to shift historical dates to align with the current year
+    date_end_date = datetime.datetime(2010, 11, 26)  # Historical end date in the CSV
+    virtual_end_date = datetime.datetime(2024, 11, 26)  # Current virtual meter end date
+    time_difference = virtual_end_date - date_end_date  # Time offset of 14 years
+
+    # Initialise a list to store minute-interval data for all times after the start_time
+    future_daily_data = []
+
+    # Loop through each row in the CSV data
+    for row in data:
+        # Extract the date and time from the CSV row
+        date_string, time_string = row[0:2]
+        # Combine date and time, apply the time difference offset to align with the current year
+        time = datetime.datetime.strptime(date_string + time_string, '%d/%m/%Y%H:%M:%S') + time_difference
+
+        # Extract voltage and intensity data from the CSV row and ensure they are numeric
+        voltage, intensity = float(row[4]), float(row[5])
+
+        # Check if the current time is after the specified start_time
+        if time > start_time:
+            # Append the data (time, intensity, voltage) to the future_daily_data list
+            future_daily_data.append((time, intensity, voltage))
+
+    # Return the collected data
+    return future_daily_data
+
+def ExtractRangeVirtualMeterCsvData(filepath, start_time, end_time):
+    """
+    Extracts virtual meter data from a CSV file and collects all data points that occur between two specified time points.
+    The function applies a time shift of 14 years to align the historical dates with the current year.
+    :param filepath: The path to the CSV file containing the virtual meter data.
+    :param start_time: A `datetime` object representing the start of the time range.
+    :param end_time: A `datetime` object representing the end of the time range.
+
+    :return: A list of tuples containing (time, intensity, voltage) for all times between the specified start_time and end_time.
+    """
+
+    # Load the CSV data from the given filepath
+    data = GetData(filepath)
+
+    # Define a time difference of 14 years to shift historical dates to align with the current year
+    date_end_date = datetime.datetime(2010, 11, 26)  # Historical end date in the CSV
+    virtual_end_date = datetime.datetime(2024, 11, 26)  # Current virtual meter end date
+    time_difference = virtual_end_date - date_end_date  # Time offset of 14 years
+
+    # Initialise a list to store minute-interval data for the start time to the end time
+    minute_data = []
+
+    # Loop through each row in the CSV data
+    for row in data:
+        # Extract the date and time from the CSV row
+        date_string, time_string = row[0:2]
+        # Combine the date and time, apply the time difference offset to align with the current year
+        time = datetime.datetime.strptime(date_string + time_string, '%d/%m/%Y%H:%M:%S') + time_difference
+
+        # Extract voltage and intensity data from the CSV row and ensure they are numeric
+        voltage, intensity = float(row[4]), float(row[5])
+
+        # Check if the current time falls within the specified start_time and end_time range
+        if start_time < time < end_time:
+            # Append the data (time, intensity, voltage) to the minute_data list
+            minute_data.append((time, intensity, voltage))
+
+    # Return the collected minute-interval data
+    return minute_data
