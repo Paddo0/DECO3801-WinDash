@@ -1,5 +1,6 @@
 import constants
 import datetime
+import time
 from helpers.DatabaseMutationHelper import *
 from helpers.DatabaseRetrieveHelper import *
 from helpers.DatabaseUpdateHelper import *
@@ -47,9 +48,6 @@ def setupWithNoData(db, meterId, start_time):
     :param start_time: A `datetime` object representing the starting time from which the meter setup will begin.
     :return: None
     """
-    
-    # Clear any existing data for the specified meter in the database
-    ClearAllData(db, meterId)
 
     # Add the new meter with default setup to the database
     AddMeter(db, meterId)
@@ -59,7 +57,7 @@ def setupWithNoData(db, meterId, start_time):
     SetCurrentDay(db, meterId, midday_start_time)
 
     # Set yesterday's date
-    yesterday_date = (start_time - timedelta(days=1)).date()  # Calculate yesterday's date
+    yesterday_date = start_time - timedelta(days=1)
     yesterday_midday_time = yesterday_date.replace(hour=12, minute=0, second=0, microsecond=0)
     SetYesterdayDay(db, meterId, yesterday_midday_time)
 
@@ -192,7 +190,9 @@ def Resume(db, meterId):
     
     # If there is no latest data, set the latest time to the current time (rounded down to the nearest minute)
     if latest_time is None:
-        latest_time = (datetime.now()).replace(second=0, microsecond=0)
+        # Get current time as timestamp and then convert it to a datetime object
+        latest_time_str = time.strftime('%Y-%m-%d %H:%M:00')
+        latest_time = datetime.datetime.strptime(latest_time_str, '%Y-%m-%d %H:%M:%S')
 
     # Extract all future data starting from after the latest time
     future_data = ExtractFutureVirtualMeterCsvData(constants.dataFilepath, latest_time)
@@ -202,5 +202,5 @@ def Resume(db, meterId):
 
 
 def Run(db , meterId, future_data):
-    print(future_data)
+    print(future_data[:20])
     return

@@ -15,7 +15,7 @@ def main():
     """
 
     # Command input to distinguish between functionality
-    command = "setup_with_historical_date"
+    command = "resume"
 
     # Defines connection to firebase database
     database = Initialize()
@@ -147,13 +147,13 @@ def RunCommand(command, db):
         SetupWithHistoricalData(db, constants.meterId, datetime.datetime(2024, 10, 9, 22, 0))
 
     elif command == "setup_with_no_data":
-        setupWithNoData()
+        setupWithNoData(db, constants.meterId, datetime.datetime(2024, 10, 9, 22, 0))
 
     elif command == "start_from_point":
         StartFromPoint()
 
     elif command == "resume":
-        Resume()
+        Resume(db, constants.meterId)
 
 if __name__ == "__main__":
     main()

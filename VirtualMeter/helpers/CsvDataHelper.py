@@ -236,8 +236,10 @@ def ExtractPastVirtualMeterCsvData(filepath, start_time):
         # Calculate the summary for the day using CalculateDaySummary
         day_summary = CalculateDaySummary(date_data)
         
+        # calculates the midday date for the specified date
+        midday_date = date_data[0][0].replace(hour=12, minute=0, second=0, microsecond=0)
         # Append the date and the corresponding summary to the overall_data list
-        overall_data.append((date, day_summary))
+        overall_data.append((midday_date, day_summary))
 
     # Return the collected data
     return yesterday_daily_data, daily_data, overall_data
@@ -262,6 +264,10 @@ def ExtractFutureVirtualMeterCsvData(filepath, start_time):
     # Initialise a list to store minute-interval data for all times after the start_time
     future_daily_data = []
 
+    # Ensure the start_time is timezone-naive
+    if start_time.tzinfo is not None:
+        start_time = start_time.replace(tzinfo=None)
+
     # Loop through each row in the CSV data
     for row in data:
         # Extract the date and time from the CSV row
@@ -271,6 +277,10 @@ def ExtractFutureVirtualMeterCsvData(filepath, start_time):
 
         # Extract voltage and intensity data from the CSV row and ensure they are numeric
         voltage, intensity = float(row[4]), float(row[5])
+
+        # Ensure the time is timezone-naive
+        if time.tzinfo is not None:
+            time = time.replace(tzinfo=None)
 
         # Check if the current time is after the specified start_time
         if time > start_time:
