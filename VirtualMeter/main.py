@@ -15,7 +15,7 @@ def main():
     """
 
     # Command input to distinguish between functionality
-    command = "extract_virtual_meter_csv_data"
+    command = "setup_with_historical_date"
 
     # Defines connection to firebase database
     database = Initialize()
@@ -144,7 +144,7 @@ def RunCommand(command, db):
     # Below are all commands to required to run virtual meter
 
     elif command == "setup_with_historical_date":
-        SetupWithHistoricalData()
+        SetupWithHistoricalData(db, constants.meterId, datetime.datetime(2024, 10, 9, 22, 0))
 
     elif command == "setup_with_no_data":
         setupWithNoData()

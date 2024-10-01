@@ -217,6 +217,8 @@ def ExtractPastVirtualMeterCsvData(filepath, start_time):
         if date == day_before_start_time:
             # If the date is the day before the start date, append the data to yesterday_daily_data
             yesterday_daily_data.append((time, intensity, voltage))
+            if date not in historical_daily_data_dict:
+                    historical_daily_data_dict[date] = []
             historical_daily_data_dict[date].append((time, intensity, voltage))
         elif date == start_time.date():
             if time <= start_time:

@@ -17,24 +17,22 @@ def SetupWithHistoricalData(db, meterId, start_time):
     :return: None
     """
 
-    # Clear any existing data in the database for the given meter
-    ClearAllData(db, meterId)
-
     # Add the meter to the database with initial setup
     AddMeter(db, meterId)
 
     # Extract historical data from the CSV for processing (yesterday's data, current day's data, overall summary, and future data)
-    yesterday_daily_data, daily_data, overall_data = ExtractPastVirtualMeterCsvData(constants.dataFilepath, meterId)
+    yesterday_daily_data, daily_data, overall_data = ExtractPastVirtualMeterCsvData(constants.dataFilepath, start_time)
 
-    # Set the current day in the meter's daily data to the start time's date
-    SetCurrentDay(db, meterId, start_time.date())
+    # Set the current date in the meter's daily data to the start time's date (at midday since firebase datefield needs a time too)
+    midday_start_time = start_time.replace(hour=12, minute=0, second=0, microsecond=0)
+    SetCurrentDay(db, meterId, midday_start_time)
 
     # Add the minute-level data for the current day up to the start time
     AddMinuteArray(db, meterId, daily_data)
 
     # Set yesterday's date and add yesterday's minute-level data to the previousDayDailyData collection
-    yesterday_date = (start_time - timedelta(days=1)).date()  # Calculate yesterday's date
-    SetYesterdayDay(db, meterId, yesterday_date)
+    yesterday_midday_time = (start_time - timedelta(days=1)).replace(hour=12, minute=0, second=0, microsecond=0)
+    SetYesterdayDay(db, meterId, yesterday_midday_time)
     AddYesterdayMinuteArray(db, meterId, yesterday_daily_data)
 
     # Add the overall summary of historical daily data to the overallData collection
@@ -56,14 +54,14 @@ def setupWithNoData(db, meterId, start_time):
     # Add the new meter with default setup to the database
     AddMeter(db, meterId)
 
-    # Set the current day in the dailyData collection to the start time's date
-    SetCurrentDay(db, meterId, start_time.date())
+    # Set the current date in the meter's daily data to the start time's date (at midday since firebase datefield needs a time too)
+    midday_start_time = start_time.replace(hour=12, minute=0, second=0, microsecond=0)
+    SetCurrentDay(db, meterId, midday_start_time)
 
-    # Calculate yesterday's date by subtracting one day from the start time
-    yesterday_date = (start_time - timedelta(days=1)).date()
-
-    # Set the calculated yesterday date in the previousDayDailyData collection
-    SetYesterdayDay(db, meterId, yesterday_date)
+    # Set yesterday's date
+    yesterday_date = (start_time - timedelta(days=1)).date()  # Calculate yesterday's date
+    yesterday_midday_time = yesterday_date.replace(hour=12, minute=0, second=0, microsecond=0)
+    SetYesterdayDay(db, meterId, yesterday_midday_time)
 
 def StartFromPoint(db, meterId, start_time):
     """
