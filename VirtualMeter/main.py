@@ -3,6 +3,7 @@ from helpers.DatabaseMutationHelper import *
 from helpers.DatabaseRetrieveHelper import *
 from helpers.DatabaseUpdateHelper import *
 from helpers.CsvDataHelper import *
+from helpers.VirtualMeterHelper import *
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
@@ -54,24 +55,12 @@ def RunCommand(command, db):
         ClearYesterdayData(db, constants.meterId)
 
     elif command == "add_minute_array":
-        """
         AddMinuteArray(db, constants.meterId,
                        list([[
                             constants.minuteTime,
                             constants.minuteIntensity,
                             constants.minuteVoltage
                        ]]))
-        """
-        array = [(datetime.datetime(2024, 9, 12, 5, 20), 10, 250),
-                 (datetime.datetime(2024, 9, 12, 5, 21), 20, 250),
-                 (datetime.datetime(2024, 9, 12, 5, 22), 20, 250),
-                 (datetime.datetime(2024, 9, 12, 5, 23), 20, 250),
-                 (datetime.datetime(2024, 9, 12, 5, 24), 30, 250),
-                 ]
-
-        # (time, intensity, voltage)
-
-        AddMinuteArray(db, constants.meterId, array)
         
     elif command == "add_yesterday_minute_array":
         AddYesterdayMinuteArray(db, constants.meterId,
@@ -82,9 +71,8 @@ def RunCommand(command, db):
                        ]]))
 
     elif command == "set_current_day":
-        ##SetCurrentDay(db, constants.meterId,
-        ##              constants.currentDate)
-        SetCurrentDay(db, constants.meterId, datetime.datetime(2024, 9, 12))
+        SetCurrentDay(db, constants.meterId,
+                      constants.currentDate)
         
     elif command == "set_yesterday_day":
         SetYesterdayDay(db, constants.meterId,
@@ -96,21 +84,11 @@ def RunCommand(command, db):
                       constants.summaryData)
 
     elif command == "add_day_array_summary":
-        ##AddDayArraySummary(db, constants.meterId,
-        ##                   list([[
-        ##                       constants.summaryDate,
-        ##                       constants.summaryData
-        ##                   ]]))
-        
-        array = [(datetime.datetime(2024, 9, 12), (1, 1, 1, 1)),
-                 (datetime.datetime(2024, 9, 13), (1, 1, 1, 1)),
-                 (datetime.datetime(2024, 9, 14), (1, 1, 1, 1)),
-                 (datetime.datetime(2024, 9, 15), (1, 1, 1, 1)),
-                 (datetime.datetime(2024, 9, 16), (1, 1, 1, 1)),
-                 (datetime.datetime(2024, 9, 17), (1, 1, 1, 1)),
-                 ]
-        
-        AddDayArraySummary(db, constants.meterId, array)
+        AddDayArraySummary(db, constants.meterId,
+                           list([[
+                               constants.summaryDate,
+                               constants.summaryData
+                           ]]))
 
     elif command == "clear_overall_data":
         ClearOverallData(db, constants.meterId)
@@ -122,8 +100,7 @@ def RunCommand(command, db):
         LoadCsvData(db, constants.meterId, constants.dataFilepath)
 
     elif command == "clear_daily_from_time":
-        #ClearDailyFromTime(db, constants.meterId, constants.minuteTime)
-        ClearDailyFromTime(db, constants.meterId, datetime.datetime(2024, 9, 12, 5, 22))
+        ClearDailyFromTime(db, constants.meterId, constants.minuteTime)
 
     elif command == "clear_overall_from_date":
         ClearOverallFromDate(db, constants.meterId, datetime.datetime(2024, 9, 14))
@@ -161,21 +138,22 @@ def RunCommand(command, db):
     elif command == "move_daily_data_to_previous_daily_data":
         MoveDailyDataToPreviousDay(db, constants.meterId)
 
-    elif command == "calculate_summary":
-        array = [(datetime.datetime(2024, 9, 12, 5, 20), 10, 250),
-                 (datetime.datetime(2024, 9, 12, 5, 21), 20, 250),
-                 (datetime.datetime(2024, 9, 12, 5, 22), 20, 250),
-                 (datetime.datetime(2024, 9, 12, 5, 23), 20, 250),
-                 (datetime.datetime(2024, 9, 12, 5, 24), 30, 250),
-                 ]
-        print(CalculateDaySummary(array))
-
     elif command == "calculate_and_save_overall_data":
         (CalculateAndSaveOverallData(db, constants.meterId))
 
-    elif command == "extract_virtual_meter_csv_data":
-        yesterday_daily_data, daily_data, overall_data, future_daily_data = ExtractAllVirtualMeterCsvData(db, constants.meterId, constants.dataFilepath, datetime.datetime(2024, 9, 25, 12))
-        print(overall_data)
+    # Below are all commands to required to run virtual meter
+
+    elif command == "setup_with_historical_date":
+        SetupWithHistoricalData()
+
+    elif command == "setup_with_no_data":
+        setupWithNoData()
+
+    elif command == "start_from_point":
+        StartFromPoint()
+
+    elif command == "resume":
+        Resume()
 
 if __name__ == "__main__":
     main()
