@@ -88,13 +88,14 @@ def StartFromPoint(db, meterId, start_time):
 
     missing_data_range = ExtractRangeVirtualMeterCsvData(constants.dataFilepath, latest_time, start_time)
 
-    ## same day
+    # same day
     if latest_time.date() == start_time.date():
         AddMinuteArray(db, meterId, missing_data_range)
 
-    ## start date is after one day after latest date
+    # start date is after one day after latest date
     elif abs((latest_time.date() - start_time.date()).days) <= 1:
         remaining_daily_data = []
+        new_daily_data = []
 
         for entry in missing_data_range:
             entry_time = entry[0]
@@ -103,21 +104,68 @@ def StartFromPoint(db, meterId, start_time):
             if entry_time.tzinfo is not None:
                 entry_time = entry_time.replace(tzinfo=None)
 
+            # if entry has same date as the previous daily data
             if entry_time.date() == latest_time.date():
                 remaining_daily_data.append(entry)
+            # if the entry is the next date
+            else:
+                new_daily_data.append(entry)
         
-        AddMinuteArray(db, meterId, remaining_daily_data)
-        CalculateAndSaveOverallData(db, meterId)
+        AddMinuteArray(db, meterId, remaining_daily_data) ## add the remaining daily data
+        CalculateAndSaveOverallData(db, meterId) ## calculate summary from complete daily data and move daily data to yesterday series
+        AddMinuteArray(db, meterId, new_daily_data) ## add new daily data
 
     ## more than a days difference between latest time and start time
+    else:
+        # get the daily data from the current day
+        latest_daily_data = GetAllDaily(db, meterId) # the daily data from the latest time point
+        historical_daily_data_dict = {}  # Dictionary to store daily data for all days between the latest time (including daily data already in the db) and day before start time
 
+        historical_daily_data_dict[latest_time.date()] = latest_daily_data
 
+        new_daily_data = []
+        new_yesyerday_daily_data = []
+        overall_data = []
+
+        for entry in missing_data_range:
+            entry_time = entry[0]
+
+            # Ensure the entry time is timezone-naive
+            if entry_time.tzinfo is not None:
+                entry_time = entry_time.replace(tzinfo=None)
+
+            # if entry is on the same date is the existing daily data table
+            if entry_time.date() == latest_time.date():
+                historical_daily_data_dict[latest_time.date()].append(entry)
+            # if entry does not have the same date as latest time (existing daily data)
+            else:
+                if entry_time.date() not in historical_daily_data_dict:
+                    historical_daily_data_dict[entry_time.date()] = []
+
+                historical_daily_data_dict[entry_time.date()].append(entry)
+
+                # if entry is the previous day to the start date
+                if abs((latest_time.date() - entry_time.date()).days) <= 1:
+                    new_yesyerday_daily_data.append(entry)
+                
+        # Calculate the daily summary for all other dates in the historical_daily_data_dict
+        for date, date_data in historical_daily_data_dict.items():
+            # Calculate the summary for the day using CalculateDaySummary
+            day_summary = CalculateDaySummary(date_data)
+
+            # Append the date and the corresponding summary to the overall_data list
+            overall_data.append((date, day_summary))
+
+    future_data = ExtractFutureVirtualMeterCsvData(constants.dataFilepath, start_time)
 
     Run(db, meterId, future_data)
 
 def Resume(db, meterId):
-    ## NEED TO HANDLE CASE WHERE THERE IS NO DATA, METER HAS JUST BEEN SETUP
     latest_time, _, _ = GetLatestMinute(db, meterId)
+    
+    if latest_time is None:
+        latest_time = (datetime.now()).replace(second=0, microsecond=0)
+
     future_data = ExtractFutureVirtualMeterCsvData(constants.dataFilepath, latest_time)
     Run(db, meterId, future_data)
 

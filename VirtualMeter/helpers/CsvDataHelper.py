@@ -217,6 +217,7 @@ def ExtractPastVirtualMeterCsvData(filepath, start_time):
         if date == day_before_start_time:
             # If the date is the day before the start date, append the data to yesterday_daily_data
             yesterday_daily_data.append((time, intensity, voltage))
+            historical_daily_data_dict[date].append((time, intensity, voltage))
         elif date == start_time.date():
             if time <= start_time:
                 # If the time is before or at the start time, add data to daily_data
@@ -284,7 +285,6 @@ def ExtractRangeVirtualMeterCsvData(filepath, start_time, end_time):
     :param filepath: The path to the CSV file containing the virtual meter data.
     :param start_time: A `datetime` object representing the start of the time range (exclusive).
     :param end_time: A `datetime` object representing the end of the time range (inclusive).
-
     :return: A list of tuples containing (time, intensity, voltage) for all times between the specified start_time and end_time.
     """
 
