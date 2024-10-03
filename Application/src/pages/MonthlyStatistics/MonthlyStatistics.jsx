@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { collection, getDocs } from "firebase/firestore"; // Import getDocs for fetching data
-import { db } from "../../firebase"; // Ensure correct Firebase config path
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../../firebase";
 import UsageGraph from "../../components/ui/UsageGraph";
 import UsageStatistics from "../../components/ui/UsageStatistics";
 import UsagePredictions from "../../components/ui/UsagePredictions";
@@ -10,26 +10,13 @@ import { SettingsContext } from '../../pages/Settings/SettingsContext';
 
 function MonthlyStatistics() {
     const { config } = useContext(SettingsContext);
-    
-    // State for graph data and summary data
     const [graphData, setGraphData] = useState([["Time", "Power Consumption"]]);
-    const [summaryData, setSummaryData] = useState([
-        ["This Quarter:", "", "-"],
-        ["Total Usage:", "0", "kWh"],
-        ["Max Daily Usage:", "0", "kWh"],
-        ["Min Daily Usage:", "0", "kWh"],
-        ["Average Intensity:", "0", "kW"],
-        ["Overall:", "", "-"],
-        ["Usage:", "0", "kWh"],
-        ["Max Daily Usage:", "0", "kWh"],
-        ["Min Daily Usage:", "0", "kWh"],
-        ["Average Intensity:", "0", "kW"],
-    ]);
+    const [summaryData, setSummaryData] = useState([]);
+    const [usageData, setUsageData] = useState({ powerUsage: 0, usageLimit: config.usageLimits.monthlyLimit });
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // Fetch the overallData collection from Firestore
                 const querySnapshot = await getDocs(collection(db, "overallData"));
                 const dataEntries = [];
                 let totalUsage = 0;
@@ -44,15 +31,9 @@ function MonthlyStatistics() {
                         const date = entry.Date.toDate();
                         const consumption = entry.TotalConsumption;
                         const avgIntensity = entry.AverageIntensity;
-                        // eslint-disable-next-line
-                        const maxIntensity = entry.MaximumIntensity;
-                        // eslint-disable-next-line
-                        const minIntensity = entry.MinimumIntensity;
 
-                        // Push data for the graph
                         dataEntries.push([date, consumption]);
 
-                        // Calculate for summary
                         totalUsage += consumption;
                         maxDailyUsage = Math.max(maxDailyUsage, consumption);
                         minDailyUsage = Math.min(minDailyUsage, consumption);
@@ -63,34 +44,29 @@ function MonthlyStatistics() {
 
                 const avgIntensity = avgIntensityTotal / count;
 
-                // Set the graph data
                 setGraphData([["Time", "Power Consumption"], ...dataEntries]);
 
-                // Set the summary data
+                // Set summaryData based on fetched data
                 setSummaryData([
-                    ["This Quarter:", "", "-"],
-                    ["Total Usage:", `${totalUsage.toFixed(2)} kWh`],
-                    ["Max Daily Usage:", `${maxDailyUsage.toFixed(2)} kWh`],
-                    ["Min Daily Usage:", `${minDailyUsage.toFixed(2)} kWh`],
-                    ["Average Intensity:", `${avgIntensity.toFixed(2)} kW`],
-                    ["Overall:", "", "-"],
-                    ["Usage:", `${totalUsage.toFixed(2)} kWh`],
-                    ["Max Daily Usage:", `${maxDailyUsage.toFixed(2)} kWh`],
-                    ["Min Daily Usage:", `${minDailyUsage.toFixed(2)} kWh`],
-                    ["Average Intensity:", `${avgIntensity.toFixed(2)} kW`],
+                    ["Total Usage:", totalUsage.toFixed(2), "kWh", config.usageLimits.monthlyLimit],
+                    ["Max Daily Usage:", maxDailyUsage.toFixed(2), "kWh", config.usageLimits.monthlyLimit],
+                    ["Min Daily Usage:", minDailyUsage.toFixed(2), "kWh", config.usageLimits.monthlyLimit],
+                    ["Average Intensity:", avgIntensity.toFixed(2), "kW", "N/A"],
                 ]);
+
+                // Set usageData dynamically from Firebase data
+                setUsageData({
+                    powerUsage: totalUsage,  // The total consumption fetched
+                    usageLimit: config.usageLimits.monthlyLimit
+                });
+
             } catch (error) {
                 console.error("Error fetching data from Firestore:", error);
             }
         };
 
         fetchData();
-    }, []); // Empty dependency array ensures this runs once when the component mounts
-
-    const usageData = {
-        powerUsage: 803.4, // Example value; update if needed from Firestore
-        usageLimit: config.usageLimits.monthlyLimit,
-    };
+    }, [config.usageLimits.monthlyLimit]);
 
     return (
         <div className="MonthlyStatistics">
