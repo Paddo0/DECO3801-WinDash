@@ -11,12 +11,12 @@ function Navbar()
     return (
         <>
             <div className="navbar">
+                <FixedNavbarIcon icon={Icons.ArrowLeft} linkTo={"/" + PageNames.SLIDESHOW_PAGE_NAME} />
                 <NavbarIcon icon={Icons.HouseIcon} linkTo={"/" + PageNames.HOME_PAGE_NAME} />
                 <NavbarIcon icon={Icons.DailyIcon} linkTo={"/" + PageNames.DAILY_PAGE_NAME} />
                 <NavbarIcon icon={Icons.MonthlyIcon} linkTo={"/" + PageNames.MONTHLY_PAGE_NAME} />
                 <NavbarIcon icon={Icons.SettingsIcon} linkTo={"/" + PageNames.SETTINGS_PAGE_NAME} />
                 <NavbarIcon icon={Icons.InfoIcon} linkTo={"/" + PageNames.INFO_PAGE_NAME} />
-
             </div>
 
             {/* Output of router content */}
@@ -39,6 +39,25 @@ function NavbarIcon(props)
         <>
             <Link to={props.linkTo}>
                 <div className="navbar-icon">
+                    <img src={props.icon} alt="icon" />
+                </div>
+            </Link>
+        </>
+    );
+}
+
+/**
+ * Defines an icon within the navbar that is fixed to the top
+ * @param   {string} linkTo The page to route users to when clicked 
+ * @param   {SvgFile} icon  The svg icon to be displayed in the navbar
+ * @returns {React.JSX.Element} An icon component that links to other pages
+ */
+function FixedNavbarIcon(props)
+{
+    return (
+        <>
+            <Link to={props.linkTo}>
+                <div className="fixed-navbar-icon">
                     <img src={props.icon} alt="icon" />
                 </div>
             </Link>

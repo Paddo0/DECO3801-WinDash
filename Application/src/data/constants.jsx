@@ -1,5 +1,6 @@
 
 export const PageNames = {
+    SLIDESHOW_PAGE_NAME: "Slideshow",
     HOME_PAGE_NAME: "Dashboard",
     DAILY_PAGE_NAME: "Daily_Statistics",
     MONTHLY_PAGE_NAME: "Monthly_Statistics",
@@ -8,7 +9,7 @@ export const PageNames = {
 };
 
 export const DefaultSettings = {
-    meterId: 1003253,
+    meterId: "1003253",
     usageLimits: {
         dailyLimit: 20,
         monthlyLimit: 1000

@@ -9,6 +9,7 @@ import { PageNames } from './data/constants';
 import { settings, SettingsContext } from "./pages/Settings/SettingsContext";
 import { useState } from "react";
 import InfoPage from "./pages/InfoPage/InfoPage";
+import Slideshow from "./pages/Slideshow/Slideshow";
 
 /**
  * Default app component to initialize the webpage
@@ -25,6 +26,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Navbar />}>
               <Route index element={<Dashboard />} />
+              <Route path={PageNames.SLIDESHOW_PAGE_NAME} element={<Slideshow />} />
               <Route path={PageNames.HOME_PAGE_NAME} element={<Dashboard />} />
               <Route path={PageNames.DAILY_PAGE_NAME} element={<DailyStatistics />} />
               <Route path={PageNames.MONTHLY_PAGE_NAME} element={<MonthlyStatistics />} />
