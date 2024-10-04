@@ -15,7 +15,9 @@ def main():
     """
 
     # Command input to distinguish between functionality
-    command = "resume"
+    #command = "setup_with_historical_data"
+    command = "start_from_point"
+    #command = "get_all_daily"
 
     # Defines connection to firebase database
     database = Initialize()
@@ -143,14 +145,14 @@ def RunCommand(command, db):
 
     # Below are all commands to required to run virtual meter
 
-    elif command == "setup_with_historical_date":
-        SetupWithHistoricalData(db, constants.meterId, datetime.datetime(2024, 10, 9, 22, 0))
+    elif command == "setup_with_historical_data":
+        SetupWithHistoricalData(db, constants.meterId, datetime.datetime(2024, 10, 3, 12, 0))
 
     elif command == "setup_with_no_data":
         setupWithNoData(db, constants.meterId, datetime.datetime(2024, 10, 9, 22, 0))
 
     elif command == "start_from_point":
-        StartFromPoint()
+        StartFromPoint(db, constants.meterId, datetime.datetime(2024, 10, 7, 1, 0))
 
     elif command == "resume":
         Resume(db, constants.meterId)

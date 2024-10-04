@@ -99,6 +99,7 @@ def StartFromPoint(db, meterId, start_time):
     if latest_time.date() == start_time.date():
         AddMinuteArray(db, meterId, missing_data_range)
 
+
     # If the start date is at most one day after the latest recorded time
     elif abs((latest_time.date() - start_time.date()).days) <= 1:
         remaining_daily_data = []
@@ -128,6 +129,7 @@ def StartFromPoint(db, meterId, start_time):
         # Add the new day's minute-level data
         AddMinuteArray(db, meterId, new_daily_data)
 
+
     # If there is more than a day's difference between latest_time and start_time
     else:
         # Get the daily data from the current day
@@ -152,20 +154,44 @@ def StartFromPoint(db, meterId, start_time):
             # Append data to the current day
             if entry_time.date() == latest_time.date():
                 historical_daily_data_dict[latest_time.date()].append(entry)
+
             # Append data to the new days
             else:
-                if entry_time.date() not in historical_daily_data_dict:
+                if (entry_time.date() not in historical_daily_data_dict) and (entry_time.date() != start_time.date()):
                     historical_daily_data_dict[entry_time.date()] = []
-                historical_daily_data_dict[entry_time.date()].append(entry)
+
+                if (entry_time.date() != start_time.date()):
+                    historical_daily_data_dict[entry_time.date()].append(entry)
 
                 # If the entry is for the day before the start date
-                if abs((latest_time.date() - entry_time.date()).days) <= 1:
+                #if abs((start_time.date() - entry_time.date()).days) <= 1:
+                if (entry_time.date() == ((start_time - datetime.timedelta(days=1)).date())):
                     new_yesterday_daily_data.append(entry)
+
+                if (entry_time.date() == start_time.date()):
+                    new_daily_data.append(entry)
 
         # Calculate the daily summary for all dates in the historical data
         for date, date_data in historical_daily_data_dict.items():
             day_summary = CalculateDaySummary(date_data)
-            overall_data.append((date, day_summary))
+            midday_date = date_data[0][0].replace(hour=12, minute=0, second=0)
+            overall_data.append((midday_date, day_summary))
+
+        # Clear existing data from dailyData and previousDailyData series
+        ClearTodayData(db, meterId)
+        ClearYesterdayData(db, meterId)
+
+        # Set the current day and yesterday's date
+        midday_start_time = start_time.replace(hour=12, minute=0, second=0, microsecond=0)
+        midday_yesterday_time = (start_time - timedelta(days=1)).replace(hour=12, minute=0, second=0, microsecond=0)
+        SetCurrentDay(db, meterId, midday_start_time)
+        SetYesterdayDay(db, meterId, midday_yesterday_time)
+
+        # Save the data to the database
+        AddMinuteArray(db, meterId, new_daily_data)
+        AddYesterdayMinuteArray(db, meterId, new_yesterday_daily_data)
+        AddDayArraySummary(db, meterId, overall_data)
+
 
     # Extract the future data after the start time
     future_data = ExtractFutureVirtualMeterCsvData(constants.dataFilepath, start_time)

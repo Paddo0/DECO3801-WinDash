@@ -370,6 +370,7 @@ def CalculateAndSaveOverallData(db, meterId: str):
     if daily_data_doc.exists:
         daily_data = daily_data_doc.to_dict()
         series_data = daily_data.get('seriesData', [])
+        # SHOULD REPLACE ABOVE LINE WITH GETALLDAILYDATA FUNCTION
 
         if series_data:
             transformed_series_data = transform_series_data(series_data)
@@ -405,10 +406,19 @@ def transform_series_data(series_data):
     for entry in series_data:
         # Extract and ensure 'Date', 'Intensity', and 'Voltage' are in the right format
         date = entry["Date"]  # This is already a datetime object
+        transformed_date = datetime.datetime(
+            year=date.year,
+            month=date.month,
+            day=date.day,
+            hour=date.hour,
+            minute=date.minute,
+            second=date.second
+            )
+
         intensity = float(entry["Intensity"])  # Convert intensity to float
         voltage = float(entry["Voltage"])      # Convert voltage to float
         
         # Append the tuple (datetime, intensity, voltage) to the transformed list
-        transformed_data.append((date, intensity, voltage))
+        transformed_data.append((transformed_date, intensity, voltage))
     
     return transformed_data

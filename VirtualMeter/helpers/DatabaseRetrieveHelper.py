@@ -1,5 +1,5 @@
 import datetime
-
+from .DatabaseMutationHelper import *
 
 def GetMinuteData(db, meterId: str, time: datetime) -> (float, float):
     """
@@ -137,8 +137,10 @@ def GetAllDaily(db, meterId: str) -> (list[datetime, float, float]):
     doc = doc_ref.get()
 
     if doc.exists:
-        return doc.to_dict().get("seriesData", [])
-    
+        daily_data = doc.to_dict().get("seriesData", [])
+        transformed_Data = transform_series_data(daily_data)
+        return transformed_Data
+
     # If no data is found, return an empty list
     return []
 
@@ -154,7 +156,9 @@ def GetAllYesterdayDailyData(db, meterId: str) -> (list[datetime, float, float])
     doc = doc_ref.get()
 
     if doc.exists:
-        return doc.to_dict().get("seriesData", [])
+        yesterday_daily_data = doc.to_dict().get("seriesData", [])
+        transformed_Data = transform_series_data(yesterday_daily_data)
+        return transformed_Data
     
     # If no data is found, return an empty list
     return []

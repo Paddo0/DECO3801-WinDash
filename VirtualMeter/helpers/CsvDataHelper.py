@@ -220,10 +220,12 @@ def ExtractPastVirtualMeterCsvData(filepath, start_time):
             if date not in historical_daily_data_dict:
                     historical_daily_data_dict[date] = []
             historical_daily_data_dict[date].append((time, intensity, voltage))
+
         elif date == start_time.date():
             if time <= start_time:
                 # If the time is before or at the start time, add data to daily_data
                 daily_data.append((time, intensity, voltage))
+                
         else:
             if time < start_time:
                 # For times before the start date, store data in historical_daily_data_dict
@@ -237,7 +239,7 @@ def ExtractPastVirtualMeterCsvData(filepath, start_time):
         day_summary = CalculateDaySummary(date_data)
         
         # calculates the midday date for the specified date
-        midday_date = date_data[0][0].replace(hour=12, minute=0, second=0, microsecond=0)
+        midday_date = date_data[0][0].replace(hour=12, minute=0, second=0)
         # Append the date and the corresponding summary to the overall_data list
         overall_data.append((midday_date, day_summary))
 
