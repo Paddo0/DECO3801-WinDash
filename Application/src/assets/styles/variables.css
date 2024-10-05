@@ -27,4 +27,7 @@
 
     /* Statistics */
     --statistics-margin: 2.5%;
+
+    /* Transitions */
+    --transition-speed: 300ms;
 }
