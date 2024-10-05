@@ -52,7 +52,7 @@ function NavbarIcon(props)
 {
     return (
         <>
-            <Link to={props.linkTo} className={({ isActive }) => (isActive ? 'active' : undefined)}>
+            <Link to={props.linkTo} >
                 <div className="navbar-icon">
                     <img src={props.icon} alt="icon" />
                 </div>

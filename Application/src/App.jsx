@@ -27,9 +27,26 @@ function App() {
 
   // Fetching data on load and settings change
   useEffect(() => {
+    // Getting data from database
+    QueryDatabase();
+  }, [config.meterId]);
+
+  // Initializing timer on app definition
+  useEffect(() => {
+    // Creating interval timer (30s)
+    const interval = setInterval(QueryDatabase, 30000);
+
+    // Clean up timer when component deconstructed
+    return () => {
+      clearInterval(interval);
+    }
+  });
+
+  // Function to get data from database, call to refresh data
+  const QueryDatabase = () => {
     GetDailyData(setDailyData, config.meterId);
     GetOverallData(setOverallData, config.meterId);
-  }, [config.meterId]);
+  }
 
   return (
     <SettingsContext.Provider value={{config, setConfig}}>
