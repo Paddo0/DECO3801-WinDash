@@ -1,5 +1,3 @@
-import { useContext } from "react";
-import { SettingsContext } from "../Settings/SettingsContext";
 import '../../assets/styles/components/dashboard.css'
 import { Link } from 'react-router-dom';
 import { PageNames } from "../../data/constants";
@@ -9,8 +7,6 @@ import { PageNames } from "../../data/constants";
  * @returns {React.JSX.Element} Dashboard component
  */
 function Dashboard() {
-  // Settings Config
-  const { config } = useContext(SettingsContext);
 
   return (
     <div className="dashboard">

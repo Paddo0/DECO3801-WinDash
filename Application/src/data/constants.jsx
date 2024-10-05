@@ -8,13 +8,18 @@ export const PageNames = {
     INFO_PAGE_NAME: "Help"
 };
 
+// Default settings when values haven't been specified
 export const DefaultSettings = {
-    meterId: "1003253",
+    meterId: "1003253", // TODO - set this to undefined meterId
     usageLimits: {
         dailyLimit: 20,
         monthlyLimit: 1000
     }
 }
+
+// Default headings for charts
+export const DailyChartHeaders = [["Time", "Power Consumption"]];
+export const OverallChartHeaders = [["Date", "Average Intensity", "Maximum Intensity", "Minimum Intensity", "Total Consumption"]];
 
 // Date Constants
 export const Dates = {
