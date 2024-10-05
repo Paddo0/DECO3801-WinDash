@@ -1,6 +1,7 @@
 import Icons from "../../utils/IconImportHelper";
 import { PageNames } from "../../data/constants";
-import { Outlet, Link } from "react-router-dom";
+import { Link, useLocation, useOutlet } from "react-router-dom";
+import { SwitchTransition, CSSTransition } from 'react-transition-group';
 
 /**
  * Defines the side navigation bar that routes the user to all pages of the application
@@ -8,6 +9,10 @@ import { Outlet, Link } from "react-router-dom";
  */
 function Navbar()
 {
+    // Defining router parameters
+    const location = useLocation();
+    const outlet = useOutlet();
+
     return (
         <>
             <div className="navbar">
@@ -19,10 +24,20 @@ function Navbar()
                 <NavbarIcon icon={Icons.InfoIcon} linkTo={"/" + PageNames.INFO_PAGE_NAME} />
             </div>
 
-            {/* Output of router content */}
-            <div className="PageContent">
-                <Outlet />
-            </div>
+            {/* Output of router content with transitions */}
+            <SwitchTransition>
+                <CSSTransition
+                    key={location.pathname}
+                    timeout={300}
+                    classNames="PageContent"
+                >
+                {() => (
+                    <div className="PageContent">
+                        {outlet}
+                    </div>
+                )}
+                </CSSTransition>
+            </SwitchTransition>
         </>
     );
 }
@@ -37,7 +52,7 @@ function NavbarIcon(props)
 {
     return (
         <>
-            <Link to={props.linkTo}>
+            <Link to={props.linkTo} className={({ isActive }) => (isActive ? 'active' : undefined)}>
                 <div className="navbar-icon">
                     <img src={props.icon} alt="icon" />
                 </div>

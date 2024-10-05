@@ -7,3 +7,22 @@
     overflow-y: auto;
     overflow-x: hidden;
 }
+
+/* Defining transition animations */
+.PageContent-enter {
+    opacity: 0;
+}
+
+.PageContent-enter-active {
+    opacity: 1;
+    transition: opacity var(--transition-speed);
+}
+
+.PageContent-exit {
+    opacity: 1;
+}
+
+.PageContent-exit-active {
+    opacity: 0;
+    transition: opacity var(--transition-speed);
+}
