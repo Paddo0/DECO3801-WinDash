@@ -5,6 +5,7 @@
 @import 'base/pageContent.css';
 @import 'base/settings.css';
 @import 'base/statistics.css';
+@import 'base/slideshow.css';
 @import 'components/navBar.css';
 @import 'components/backgroundDimmer.css';
 @import 'components/pop-up.css';
