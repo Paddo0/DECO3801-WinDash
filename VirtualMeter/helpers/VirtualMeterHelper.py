@@ -197,10 +197,22 @@ def StartFromPoint(db, meterId, start_time):
     future_data = ExtractFutureVirtualMeterCsvData(constants.dataFilepath, start_time)
 
     # Start running the virtual meter from the start time
-    Run(db, meterId, future_data)
+    Run(db, meterId, future_data, start_time)
 
-
-import datetime
+def StartFromNow(db, meterId):
+    """
+    Starts the virtual meter from the current time. The function retrieves the current time, 
+    rounded down to the nearest minute, and passes it to the StartFromPoint function to begin 
+    running the virtual meter from this point.
+    :param db: The reference to the Firebase database where meter data is stored.
+    :param meterId: The unique identifier for the meter to be started from the current time.
+    :return: None
+    """
+    # Retrieve the current time and round it down to the nearest minute
+    start_time = (datetime.now()).replace(second=0, microsecond=0)
+    
+    # Call StartFromPoint to start the virtual meter from the current time
+    StartFromPoint(db, meterId, start_time)
 
 def Resume(db, meterId):
     """
@@ -224,9 +236,57 @@ def Resume(db, meterId):
     future_data = ExtractFutureVirtualMeterCsvData(constants.dataFilepath, latest_time)
     
     # Start running the virtual meter from the latest time with the extracted future data
-    Run(db, meterId, future_data)
+    Run(db, meterId, future_data, future_data[0][0])
 
+def Run(db, meterId, future_data, start_time):
+    """
+    This function processes future data entries and inserts them into the database at the appropriate times,
+    adjusted by a start time offset to simulate running the meter at a different time.
+    :param db: The reference to the Firebase database where the meter data is stored.
+    :param meterId: The ID of the meter.
+    :param future_data: The list of future data entries containing (entry_time, intensity, voltage).
+    :param start_time: The datetime object representing the start time for the virtual meter.
+    """
 
-def Run(db , meterId, future_data):
-    print(future_data[:20])
+    # Calculate the offset between the actual current time and the desired start time
+    current_time = datetime.datetime.now()
+    start_time_offset = current_time - start_time
+
+    print(f"Start Time: {start_time}")
+    print(f"Current Time: {current_time}")
+    print(f"Start Time Offset: {start_time_offset}")
+
+    previous_entry_date = future_data[0][0].date()
+
+    for entry in future_data:
+        entry_time, intensity, voltage = entry
+
+        # If it has moved on to the next day, calculate and save the overall data for the previous day
+        if entry_time.date() > previous_entry_date:
+            CalculateAndSaveOverallData(db, meterId)
+
+        previous_entry_date = entry_time.date()
+
+        # Get the current time at this point in the loop
+        current_time = datetime.datetime.now()
+
+        # Adjust the entry time by applying the start time offset (subtracting the offset)
+        adjusted_entry_time = entry_time + start_time_offset
+
+        # Add entry to database if the timepoint (with offset) has already passed
+        if adjusted_entry_time < current_time:
+            AddMinuteData(db, meterId, entry_time, intensity, voltage)
+
+        # Calculate the time difference (in seconds) between the current time and the adjusted entry time
+        time_to_wait = (adjusted_entry_time - current_time).total_seconds()
+        print(f"Time to Wait: {time_to_wait} seconds for entry {entry_time} (adjusted: {adjusted_entry_time})")
+
+        # If the entry time is in the future, wait until that time
+        if time_to_wait > 0:
+            time.sleep(time_to_wait)
+
+        # After waiting (or if already past), add the entry to the database
+        AddMinuteData(db, meterId, entry_time, intensity, voltage)
+        print(f"Adding entry to DB: {entry}")
+
     return
