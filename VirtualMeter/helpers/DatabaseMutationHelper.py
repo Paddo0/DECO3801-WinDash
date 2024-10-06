@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from firebase_admin import firestore
 from helpers.CalculationHelper import *
+from helpers.DatabaseRetrieveHelper import *
 
 
 def AddMeter(db, meterId):
@@ -336,6 +337,18 @@ def MoveDailyDataToPreviousDay(db, meterId: str):
     if daily_data_doc.exists:
         daily_data = daily_data_doc.to_dict()
 
+        date = daily_data.get('currentDate')
+        transformed_date = datetime.datetime(
+                year=date.year,
+                month=date.month,
+                day=date.day,
+                hour=date.hour,
+                minute=date.minute,
+                second=date.second
+                )
+        next_date = transformed_date + datetime.timedelta(days=1)
+        next_date_midday = next_date.replace(hour=12, minute=0, second=0, microsecond=0)
+
         # Move the daily data to the previousDayDailyData collection
         doc_ref_previous_day = db.collection("previousDayDailyData").document(meterId)
         
@@ -348,7 +361,8 @@ def MoveDailyDataToPreviousDay(db, meterId: str):
         # Clear the current day's data in the dailyData collection
         doc_ref_daily.update({
             'seriesData': [],
-            'currentDate': datetime.datetime.now()  # Reset to today's date
+        #    'currentDate': datetime.datetime.now()  # Reset to today's date
+            'currentDate': next_date_midday # Reset to next day's date
         })
 
         print(f"Moved daily data to previousDayDailyData for meterId {meterId} and cleared dailyData.")
@@ -370,7 +384,6 @@ def CalculateAndSaveOverallData(db, meterId: str):
     if daily_data_doc.exists:
         daily_data = daily_data_doc.to_dict()
         series_data = daily_data.get('seriesData', [])
-        # SHOULD REPLACE ABOVE LINE WITH GETALLDAILYDATA FUNCTION
 
         if series_data:
             transformed_series_data = transform_series_data(series_data)

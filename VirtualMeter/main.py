@@ -15,9 +15,9 @@ def main():
     """
 
     # Command input to distinguish between functionality
-    command = "setup_with_historical_data"
+    #command = "setup_with_historical_data"
     #command = "start_from_point"
-    #command = "resume"
+    command = "resume"
 
     # Defines connection to firebase database
     database = Initialize()

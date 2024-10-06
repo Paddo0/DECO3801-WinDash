@@ -8,7 +8,7 @@ dataFilepath = "data/household_power_consumption.csv"
 
 # MeterId to index database tables
 #meterId = "1003253"
-meterId = "test19"
+meterId = "test20"
 
 # Input Settings #
 # Daily Data

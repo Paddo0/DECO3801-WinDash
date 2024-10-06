@@ -247,7 +247,6 @@ def Run(db, meterId, future_data, start_time):
     :param future_data: The list of future data entries containing (entry_time, intensity, voltage).
     :param start_time: The datetime object representing the start time for the virtual meter.
     """
-
     # Calculate the offset between the actual current time and the desired start time
     current_time = datetime.datetime.now()
     start_time_offset = current_time - start_time
