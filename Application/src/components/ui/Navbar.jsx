@@ -2,6 +2,7 @@ import Icons from "../../utils/IconImportHelper";
 import { PageNames } from "../../data/constants";
 import { Link, useLocation, useOutlet } from "react-router-dom";
 import { SwitchTransition, CSSTransition } from 'react-transition-group';
+import { useRef } from "react";
 
 /**
  * Defines the side navigation bar that routes the user to all pages of the application
@@ -12,6 +13,7 @@ function Navbar()
     // Defining router parameters
     const location = useLocation();
     const outlet = useOutlet();
+    const nodeRef = useRef(null);
 
     return (
         <>
@@ -30,9 +32,10 @@ function Navbar()
                     key={location.pathname}
                     timeout={300}
                     classNames="PageContent"
+                    nodeRef={nodeRef}
                 >
                 {() => (
-                    <div className="PageContent">
+                    <div className="PageContent" ref={nodeRef}>
                         {outlet}
                     </div>
                 )}
