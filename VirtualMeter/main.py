@@ -49,6 +49,9 @@ def RunCommand(command, db):
     elif command == "start_from_point":
         StartFromPoint(db, constants.meterId, datetime.datetime(2024, 10, 7, 23, 57))
 
+    elif command == "start_from_now":
+        StartFromNow(db, constants.meterId)
+
     elif command == "resume":
         Resume(db, constants.meterId)
 
