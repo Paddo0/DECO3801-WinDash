@@ -3,6 +3,7 @@
 ################################################################################
 import datetime
 
+
 # File path for consumption data file
 dataFilepath = "data/household_power_consumption.csv"
 
@@ -12,7 +13,7 @@ meterId = "1003253"
 # Input Settings #
 # Daily Data
 # Defines individual minute time value for daily data
-minuteTime = datetime.datetime(2006, 12, 16, 5, 25)
+minuteTime = datetime.datetime(2024, 9, 12, 5, 25)
 
 # Defines the minute average intensity for daily data
 minuteIntensity = 16.8
