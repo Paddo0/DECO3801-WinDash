@@ -27,7 +27,7 @@ function Settings() {
         </div>;
   
       // Defining meter display if meter id is defined
-      if (config.meterId != null)
+      if (config.meterId != null && config.meterId !== "")
       {
         display = <MeterDisplay />;
       }

@@ -7,6 +7,7 @@ export const GetDailyData = async (setData, meterId) => {
     // Returning if meterId isn't valid
     if (meterId == null || meterId === "")
     {
+        setData(DailyChartHeaders);
         return;
     }
 
@@ -37,6 +38,7 @@ export const GetOverallData = async (setData, meterId) => {
     // Returning if meterId isn't valid
     if (meterId == null || meterId === "")
     {
+        setData(OverallChartHeaders);
         return;
     }
 
