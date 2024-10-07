@@ -25,3 +25,16 @@ export const GetHighUsage = (overallData, n) =>
     // Returning average
     return highUsage / n;
 }
+
+export const GetSeriesData = (overallData, index) =>
+{
+    // Checking if overall data is populated with values
+    if (overallData.length <= 1 || index === 0)
+    {
+        return overallData;
+    }
+
+    // Singling out the index slice specified
+    var seriesData = overallData.map(entry => [entry[0], entry[index]]);
+    return seriesData;
+}

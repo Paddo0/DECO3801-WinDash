@@ -6,18 +6,49 @@
  */
 function Dropdown(props)
 {
-    return (
-        <div className="Dropdown">
-            <select placeholder={props.placeholder}>
+    const ApplyValue = (e) => {
+        if (props.setValue != null)
+        {
+            props.setValue(props.options[e.target.value]);
+        }
+    }
 
-                <option value="1st">1st Configuration</option>
+    const CalculateDropdown = () => {
+        // Returning empty component if list isn't defined
+        if (props.options == null)
+        {
+            return (<></>);
+        }
+        
+        // Creating dropdown with all options
+        var dropdown = <></>;
+        for (var i = 0; i < props.options.length; i++)
+        {
+            dropdown = <>
+                {dropdown}
+                {<option value={i}>{props.options[i].name}</option>}
+            </>;
+        }
 
-                <option value="2nd">2nd Configuration</option>
-
-                <option value="3rd">3rd Configuration</option>
-
+        // Applying outer tags
+        dropdown = (<div className="Dropdown">
+            <select 
+                defaultValue={props.defaultValue}
+                onChange={e => ApplyValue(e)}
+            >
+                {dropdown}
             </select>
-        </div>
+        </div>);
+
+        return (dropdown);
+    };
+
+    const dropdown = CalculateDropdown();
+
+    return (
+        <>
+            {dropdown}
+        </>
     )
 }
 
