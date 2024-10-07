@@ -1,58 +1,106 @@
+import React, { useEffect, useState, useContext } from 'react';
+import { collection, getDocs } from "firebase/firestore"; // Import getDocs for fetching data
+import { db } from "../../firebase"; // Ensure correct Firebase config path
 import UsageGraph from "../../components/ui/UsageGraph";
 import UsageStatistics from "../../components/ui/UsageStatistics";
 import UsagePredictions from "../../components/ui/UsagePredictions";
 import UsageLimit from "../../components/ui/UsageLimit";
 import { MonthlyGraphConfig, PredictionsInfo } from "../../data/constants";
 import { SettingsContext } from '../../pages/Settings/SettingsContext';
-import { useContext } from 'react';
 
-/**
- * Base daily statistics page component
- * @returns {React.JSX.Element} Daily statistics component
- */
 function MonthlyStatistics() {
-    // Settings config
     const { config } = useContext(SettingsContext);
-
-    // Dummy Data
-    const data = [["Time", "Power Consumption"],
-                [new Date(), 1]];
     
-    // Summary Data
-    function GetSummaryData() {
-        var summaryData = [
-            ["This Quarter:", "", "-" ],
-            ["Total Usage:", "2007.7", "kWh" ],
-            ["Max Daily Usage:", "16.8", "kWh" ],
-            ["Min Daily Usage:", "8.4", "kWh" ],
-            ["Average Intensity:", "5.5", "kW" ],
-            ["Overall:", "", "-" ],
-            ["Usage:", "15628.7", "kWh" ],
-            ["Max Daily Usage:", "21.4", "kWh" ],
-            ["Min Daily Usage:", "6.8", "kWh" ],
-            ["Average Intensity:", "7.2", "kW" ],
-        ];
+    // State for graph data and summary data
+    const [graphData, setGraphData] = useState([["Time", "Power Consumption"]]);
+    const [summaryData, setSummaryData] = useState([
+        ["This Quarter:", "", "-"],
+        ["Total Usage:", "0", "kWh"],
+        ["Max Daily Usage:", "0", "kWh"],
+        ["Min Daily Usage:", "0", "kWh"],
+        ["Average Intensity:", "0", "kW"],
+        ["Overall:", "", "-"],
+        ["Usage:", "0", "kWh"],
+        ["Max Daily Usage:", "0", "kWh"],
+        ["Min Daily Usage:", "0", "kWh"],
+        ["Average Intensity:", "0", "kW"],
+    ]);
 
-        return summaryData;
-    }
-
-    // Limit dummy data
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                // Fetch the overallData collection from Firestore
+                const querySnapshot = await getDocs(collection(db, "overallData"));
+                const dataEntries = [];
+                let totalUsage = 0;
+                let maxDailyUsage = 0;
+                let minDailyUsage = Infinity;
+                let avgIntensityTotal = 0;
+                let count = 0;
+    
+                querySnapshot.forEach((doc) => {
+                    const docData = doc.data();
+                    // Check if `data` array exists in the document
+                    if (docData && Array.isArray(docData.data)) {
+                        docData.data.forEach(entry => {
+                            const date = entry.Date.toDate();
+                            const consumption = entry.TotalConsumption;
+                            const avgIntensity = entry.AverageIntensity;
+                            
+                            // Push data for the graph
+                            dataEntries.push([date, consumption]);
+                            
+                            // Calculate for summary
+                            totalUsage += consumption;
+                            maxDailyUsage = Math.max(maxDailyUsage, consumption);
+                            minDailyUsage = Math.min(minDailyUsage, consumption);
+                            avgIntensityTotal += avgIntensity;
+                            count++;
+                        });
+                    } else {
+                        console.warn(`Document ${doc.id} does not contain valid overallData`);
+                    }
+                });
+    
+                const avgIntensity = avgIntensityTotal / count;
+    
+                // Set the graph data
+                setGraphData([["Time", "Power Consumption"], ...dataEntries]);
+    
+                // Set the summary data
+                setSummaryData([
+                    ["This Quarter:", "", "-"],
+                    ["Total Usage:", `${totalUsage.toFixed(2)} kWh`],
+                    ["Max Daily Usage:", `${maxDailyUsage.toFixed(2)} kWh`],
+                    ["Min Daily Usage:", `${minDailyUsage.toFixed(2)} kWh`],
+                    ["Average Intensity:", `${avgIntensity.toFixed(2)} kW`],
+                    ["Overall:", "", "-"],
+                    ["Usage:", `${totalUsage.toFixed(2)} kWh`],
+                    ["Max Daily Usage:", `${maxDailyUsage.toFixed(2)} kWh`],
+                    ["Min Daily Usage:", `${minDailyUsage.toFixed(2)} kWh`],
+                    ["Average Intensity:", `${avgIntensity.toFixed(2)} kW`],
+                ]);
+            } catch (error) {
+                console.error("Error fetching data from Firestore:", error);
+            }
+        };
+    
+        fetchData();
+    }, []); // Empty dependency array ensures this runs once when the component mounts
+    
     const usageData = {
-        powerUsage: 803.4,
+        powerUsage: 803.4, // Example value; update if needed from Firestore
         usageLimit: config.usageLimits.monthlyLimit,
     };
 
     return (
         <div className="MonthlyStatistics">
-            <UsageGraph title="Monthly Statistics" data={data} graphConfig={MonthlyGraphConfig} />
-
-            <UsageStatistics title="Monthly Summary" summaryData={GetSummaryData()} />
-
+            <UsageGraph title="Monthly Statistics" data={graphData} graphConfig={MonthlyGraphConfig} />
+            <UsageStatistics title="Monthly Summary" summaryData={summaryData} />
             <UsagePredictions predictionsInfo={PredictionsInfo.Monthly} usageData={usageData} />
-            
             <UsageLimit usageData={usageData} />
         </div>
     );
 }
-  
+
 export default MonthlyStatistics;

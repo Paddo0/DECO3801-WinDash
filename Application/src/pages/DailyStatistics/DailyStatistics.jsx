@@ -1,35 +1,37 @@
+import React, { useEffect, useState, useContext } from 'react';
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../../firebase"; // Ensure this path is correct
 import UsageGraph from "../../components/ui/UsageGraph";
 import UsageStatistics from "../../components/ui/UsageStatistics";
 import UsagePredictions from "../../components/ui/UsagePredictions";
 import UsageLimit from "../../components/ui/UsageLimit";
 import { DailyGraphConfig, PredictionsInfo } from "../../data/constants";
 import { SettingsContext } from '../../pages/Settings/SettingsContext';
-import { useContext } from 'react';
 
-/**
- * Base daily statistics page component
- * @returns {React.JSX.Element} Daily statistics component
- */
 function DailyStatistics() {
-    // Settings config
     const { config } = useContext(SettingsContext);
+    const [data, setData] = useState([["Time", "Power Consumption"]]);  // Initialize with header
 
-    // Dummy Data
-    const data = [["Time", "Power Consumption"],
-          [new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0), 1.8],
-          [new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 1, 45, 0), 1.2],
-          [new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 3, 45, 0), 1.5],
-          [new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 5, 30, 0), 3.0],
-          [new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 7, 15, 0), 2.5],
-          [new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 9, 30, 0), 6.0],
-          [new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 10, 30, 0), 7.0],
-          [new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 14, 15, 0), 8.0],
-          [new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 18, 0, 0), 6.5]];
+    useEffect(() => {
+        const fetchData = async () => {
+            const querySnapshot = await getDocs(collection(db, "dailyData")); // Use the correct collection name
+            const seriesData = [];
+            querySnapshot.forEach(doc => {
+                doc.data().seriesData.forEach(entry => {
+                    const powerConsumption = entry.Voltage * entry.Intensity; // Calculate power consumption
+                    const date = entry.Date.toDate(); // Convert Firestore timestamp to JavaScript Date
+                    seriesData.push([date, powerConsumption]);
+                });
+            });
+            seriesData.sort((a, b) => a[0] - b[0]); // Sort by date
+            setData([["Time", "Power Consumption"], ...seriesData]);
+        };
+        fetchData();
+    }, []);
 
-    // Summary Dummy Data
     function GetSummaryData() {
         var summaryData = [
-            ["Daily Total:", "55.7", "kWh" ],
+            ["Daily Total:", "55.7", "kWh" ], // Update these values based on fetched data
             ["Max Intensity:", "8.0", "kW" ],
             ["Minimum Intensity:", "1.4", "kW" ],
             ["Average Intensity:", "5", "kW" ],
@@ -38,21 +40,18 @@ function DailyStatistics() {
         return summaryData;
     }
 
-    // Limit dummy data
     const usageData = {
-        powerUsage: 5.4,
+        powerUsage: 5.4, // Update this based on fetched data
         usageLimit: config.usageLimits.dailyLimit,
     };
 
     return (
         <div className="DailyStatistics">
             <UsageGraph title="Daily Statistics" data={data} graphConfig={DailyGraphConfig}/>
-
             <UsageStatistics title="Daily Summary" summaryData={GetSummaryData()}/>
-
-            <UsagePredictions predictionsInfo={PredictionsInfo.Daily} usageData={usageData} />
-            
-            <UsageLimit usageData={usageData} />
+            {/* Pass 'Daily' as the predictionsInfo to indicate this is for daily predictions */}
+            <UsagePredictions predictionsInfo="Daily" usageData={usageData}/>
+            <UsageLimit usageData={usageData}/>
         </div>
     );
 }

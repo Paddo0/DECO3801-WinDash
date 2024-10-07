@@ -2,15 +2,33 @@ import { useState } from "react";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 
+
 function UsagePredictions(props) {
     const [prediction, setPrediction] = useState(null);
+    const [meterId, setMeterId] = useState(""); // Status for entering meterId
 
     const handlePredictionClick = async () => {
+        console.log("Meter ID being sent:", meterId); 
+
+        const apiEndpoint = props.predictionsInfo === "Daily" 
+            ? "http://127.0.0.1:5000/daily-prediction"
+            : "http://127.0.0.1:5000/monthly-prediction";
+
         try {
-            const response = await fetch("http://127.0.0.1:5000/prediction");
+            const response = await fetch(apiEndpoint, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ meterId })  // send meterId to the backend
+            });
             const data = await response.json();
             console.log("Response received:", data);
-            setPrediction(data.prediction);
+            if (data.error) {
+                console.error("Error from server:", data.error);
+            } else {
+                setPrediction(data.prediction);
+            }
         } catch (error) {
             console.error("Error fetching prediction:", error);
         }
@@ -22,7 +40,13 @@ function UsagePredictions(props) {
                 <div className="UsagePredictionsBar">
                     <p>Usage Predictions</p>
                 </div>
-                <p>{props.predictionsInfo?.InfoText || "No InfoText available"}</p> 
+                <input 
+                    type="text" 
+                    value={meterId} 
+                    onChange={(e) => setMeterId(e.target.value)} 
+                    placeholder="Enter Meter ID" 
+                    id="meter-id-input"
+                />
                 <div className="UsagePredictionsButton">
                     <button onClick={handlePredictionClick}>Generate Prediction</button>
                 </div>
@@ -53,5 +77,6 @@ function UsagePredictions(props) {
         </div>
     );
 }
+
 
 export default UsagePredictions;
