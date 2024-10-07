@@ -1,6 +1,7 @@
 import '../../assets/styles/components/dashboard.css'
 import { Link } from 'react-router-dom';
 import { PageNames } from "../../data/constants";
+import RequireMeterId from '../../components/ui/RequireMeterId';
 
 /**
  * Base dashboard page component
@@ -21,12 +22,14 @@ function Dashboard() {
           <div className="limit">
             <div className="circle">25%</div>
             <p>Monthly Limit: 550.8 / 2000.0 kWh</p>
+            <RequireMeterId />
           </div>
         </div>
 
         <div className="card current-usage">
           <h3>Current Usage</h3>
           <div className="circle">5.8 Amps</div>
+          <RequireMeterId />
         </div>
 
         <div className="card setup-meter">
@@ -38,6 +41,7 @@ function Dashboard() {
           <h3>Alerts</h3>
           <p>!!! Daily usage limit almost reached !!!</p>
           <p>!!! High current energy usage !!!</p>
+          <RequireMeterId />
         </div>
       </div>
 

@@ -1,5 +1,6 @@
 import Dropdown from "./Dropdown";
 import { Chart } from "react-google-charts";
+import RequireMeterId from "./RequireMeterId";
 
 
 /**
@@ -61,6 +62,8 @@ function UsageGraph(props)
                     }
                 />
             </div>
+            
+            <RequireMeterId />
 
         </div>
     )

@@ -31,6 +31,7 @@
     height: 80%;
     background-color: #ebedee;
     color: var(--navbar-background-col);
+    position: relative;
     padding: 1.4%;
     border-radius: 10px;
     text-align: center;

@@ -1,0 +1,39 @@
+
+/* Main overlay container to dim whole div */
+.meterIdOverlay {
+    /* Positioning */
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    height: 100%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+
+    /* Overlay */
+    opacity: 0.75;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Form in center to input meter Id */
+.meterIdForm {
+    width: 15vw;
+    position: relative;
+    height: auto;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.meterIdForm > p {
+    font-weight: bold;
+    font-size: 1.8vw;
+}
+
+.meterIdForm > button {
+    margin-top: 0;
+}
+
+
