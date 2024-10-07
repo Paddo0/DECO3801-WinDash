@@ -1,13 +1,15 @@
-import {CircularProgressbar} from 'react-circular-progressbar';
+import {buildStyles, CircularProgressbar} from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { Link } from 'react-router-dom';
 import { PageNames } from '../../data/constants';
+import { GetColor } from '../../utils/CircularBarHelper';
 
 /**
  * Defines the limit display component to display usage limit data
  * @returns {React.JSX.Element} Component containing usage limit component
  */
 function UsageLimit(props) {
+    const percentUsage = props.usageData.powerUsage / props.usageData.usageLimit * 100;
 
     return(
         <div className="UsageLimit">
@@ -18,7 +20,7 @@ function UsageLimit(props) {
             <div className="UsageLimitDisplay">
                 <div className='UsageLimitContent'>
                     <div className='UsageLimitText'>
-                        {props.usageData.powerUsage} / {props.usageData.usageLimit} kWh
+                        {props.usageData.powerUsage.toFixed(1)} / {props.usageData.usageLimit} kWh
                     </div>
 
                     <div className='UsageLimitButton'>
@@ -30,9 +32,13 @@ function UsageLimit(props) {
                 
                 <div className='UsageLimitProgressBar'>
                     <CircularProgressbar 
-                        value={props.usageData.powerUsage / props.usageData.usageLimit * 100} 
-                        text={(props.usageData.powerUsage / props.usageData.usageLimit * 100).toFixed(1) + '%'} 
+                        value={percentUsage} 
+                        text={percentUsage.toFixed(1) + '%'}
                         strokeWidth={10} 
+                        styles={buildStyles({
+                            pathColor: GetColor(percentUsage / 100),
+                            textColor: 'rgba(35, 39, 47, 255)'
+                        })}
                     />
                 </div>
             </div>

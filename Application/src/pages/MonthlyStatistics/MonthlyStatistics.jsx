@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import UsageGraph from "../../components/ui/UsageGraph";
 import UsageStatistics from "../../components/ui/UsageStatistics";
 import UsagePredictions from "../../components/ui/UsagePredictions";
@@ -6,6 +6,7 @@ import UsageLimit from "../../components/ui/UsageLimit";
 import { MonthlyGraphConfig, PredictionsInfo } from "../../data/constants";
 import { SettingsContext } from '../../pages/Settings/SettingsContext';
 import { OverallDataContext } from '../../utils/ContextProvider';
+import { CalculateOverallLastNDays } from '../../utils/SummaryHelper';
 
 function MonthlyStatistics() {
     const { config } = useContext(SettingsContext);
@@ -25,10 +26,17 @@ function MonthlyStatistics() {
         ["Average Intensity:", "0", "kW"],
     ]);
 
-    const usageData = {
-        powerUsage: 803.4, // Example value; update if needed from Firestore
+    // Defining usage data state
+    const [ usageData, setUsageData ] = useState({
+        powerUsage: 0.0, // Update this based on fetched data
         usageLimit: config.usageLimits.monthlyLimit,
-    };
+    });
+
+    // Handle overall data changes
+    useEffect(() => {
+        // Updating usage limits
+        setUsageData((previousData) => { return {...previousData, powerUsage: CalculateOverallLastNDays(overallData, 30)} });
+    }, [overallData]);
 
     return (
         <div className="MonthlyStatistics">
