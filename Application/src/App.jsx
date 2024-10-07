@@ -12,6 +12,7 @@ import InfoPage from "./pages/InfoPage/InfoPage";
 import Slideshow from "./pages/Slideshow/Slideshow";
 import { GetDailyData, GetOverallData } from "./utils/DatabaseHelper";
 import { DailyDataContext, OverallDataContext } from "./utils/ContextProvider";
+import { useCallback } from "react";
 
 /**
  * Default app component to initialize the webpage
@@ -25,11 +26,17 @@ function App() {
   const [dailyData, setDailyData] = useState(DailyChartHeaders);
   const [overallData, setOverallData] = useState(OverallChartHeaders);
 
+  // Function to get data from database, call to refresh data
+  const QueryDatabase = useCallback(() => {
+    GetDailyData(setDailyData, config.meterId);
+    GetOverallData(setOverallData, config.meterId);
+  }, [config.meterId]);
+
   // Fetching data on load and settings change
   useEffect(() => {
     // Getting data from database
     QueryDatabase();
-  }, [config.meterId]);
+  }, [config.meterId, QueryDatabase]);
 
   // Initializing timer on app definition
   useEffect(() => {
@@ -40,13 +47,7 @@ function App() {
     return () => {
       clearInterval(interval);
     }
-  });
-
-  // Function to get data from database, call to refresh data
-  const QueryDatabase = () => {
-    GetDailyData(setDailyData, config.meterId);
-    GetOverallData(setOverallData, config.meterId);
-  }
+  }, [QueryDatabase]);
 
   return (
     <SettingsContext.Provider value={{config, setConfig}}>
