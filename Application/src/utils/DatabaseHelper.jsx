@@ -5,7 +5,7 @@ import { DailyChartHeaders, OverallChartHeaders } from "../data/constants";
 // Asynchronous function to get daily data
 export const GetDailyData = async (setData, meterId) => {
     // Returning if meterId isn't valid
-    if (meterId == null)
+    if (meterId == null || meterId === "")
     {
         return;
     }
@@ -35,7 +35,7 @@ export const GetDailyData = async (setData, meterId) => {
 // Asynchronous function to get monthly data
 export const GetOverallData = async (setData, meterId) => {
     // Returning if meterId isn't valid
-    if (meterId == null)
+    if (meterId == null || meterId === "")
     {
         return;
     }

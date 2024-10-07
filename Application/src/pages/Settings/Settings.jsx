@@ -1,7 +1,9 @@
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState, useRef} from "react";
 import { GetDefaultSettings, SettingsContext } from "./SettingsContext";
 import MeterDisplay from "./MeterDisplay";
 import MeterInput from "../../components/form/MeterInput";
+import Keyboard from 'react-simple-keyboard';
+import 'react-simple-keyboard/build/css/index.css';
 
 /**
  * Base settings page component
@@ -46,7 +48,7 @@ function Settings() {
     setConfig(() => {return GetDefaultSettings()});
   }
 
-  //#region Variable Update Handlers
+  // #region Variable Update Handlers
 
   // Handling daily limit change
   const updateDailyLimit = (newLimit) => {
@@ -79,6 +81,74 @@ function Settings() {
 
   //#endregion
 
+  // #region Keyboard
+
+  // Defining states
+  const [ keyboard, setKeyboard ] = useState(<></>);
+  const keyboardRef = useRef(null);
+    
+  // Adding mouse down listener to close keyboard when clicking away
+  useEffect(() => {
+    document.addEventListener("mousedown", HandleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", HandleOutsideClick);
+    }
+  });
+
+  // Function to remove keyboard when clicking outside of input / keyboard fields
+  const HandleOutsideClick = (e) => {
+    if (keyboardRef.current && !keyboardRef.current.contains(e.target))
+    {
+      RemoveKeyboard();
+    }
+  }
+    
+  // Function to make keyboard with bind to given value
+  const MakeKeyboard = (e, setValue) => {
+    // Clearing old keyboard
+    RemoveKeyboard();
+
+    // Making new keyboard
+    setKeyboard(<Keyboard
+      layoutName="default"
+      theme="keyboard hg-theme-default hg-layout-default"
+      onKeyPress={(button) => OnKeyPressed(button, e, setValue)}
+    />);
+  };
+  
+  // Handles all key presses for keyboard
+  const OnKeyPressed = (button, e, setValue) => {
+    // Handle invalid keys
+    if (button === "{shift}" || button === "{lock}" || button === "{space}" || button === "{tab}")
+    {
+      return;
+    }
+
+    // Handle backspace
+    if (button === "{bksp}")
+    {
+      setValue(e.target.value.slice(0, -1));
+      return;
+    }
+
+    // Handle enter
+    if (button === "{enter}")
+    {
+      RemoveKeyboard();
+      return;
+    }
+
+    // Handle key pressed
+    setValue(e.target.value + button);
+  }
+
+  // Sets keyboard state to empty component
+  const RemoveKeyboard = () => {
+    setKeyboard(<></>);
+  }
+
+  // #endregion
+
   return (
     <div className="Settings">
       <h1>Settings / Configuration</h1>
@@ -90,8 +160,12 @@ function Settings() {
       </div>
 
       <div className="SettingsInput">
-        <p><input value={config.usageLimits.dailyLimit} onChange={e => updateDailyLimit(e.target.value)}/> kWh</p>
-        <p><input value={config.usageLimits.monthlyLimit} onChange={e => updateMonthlyLimit(e.target.value)} /> kWh</p>
+        <p><input value={config.usageLimits.dailyLimit} onChange={e => updateDailyLimit(e.target.value)} onFocus={e => MakeKeyboard(e, updateDailyLimit)} /> kWh</p>
+        <p><input value={config.usageLimits.monthlyLimit} onChange={e => updateMonthlyLimit(e.target.value)} onFocus={e => MakeKeyboard(e, updateMonthlyLimit)}  /> kWh</p>
+      </div>
+
+      <div ref={keyboardRef} className="keyboardDiv">
+        {keyboard}
       </div>
 
       <hr />
