@@ -15,9 +15,7 @@ def main():
     """
 
     # Command input to distinguish between functionality
-    #command = "setup_with_historical_data"
-    #command = "start_from_point"
-    command = "resume"
+    command = "get_all_overall"
 
     # Defines connection to firebase database
     database = Initialize()
@@ -41,20 +39,36 @@ def Initialize():
 
 
 def RunCommand(command, db):
-    if command == "add_meter":
-        AddMeter(db, constants.meterId)
+    # Main commands to run Virtual Meter
+    if command == "setup_with_historical_data":
+        SetupWithHistoricalData(db, constants.meterId, datetime.datetime(2024, 10, 7, 12, 0))
 
-    elif command == "add_minute_data":
-        AddMinuteData(db, constants.meterId,
-                      constants.minuteTime,
-                      constants.minuteIntensity,
-                      constants.minuteVoltage)
+    elif command == "setup_with_no_data":
+        setupWithNoData(db, constants.meterId, datetime.datetime(2024, 10, 9, 22, 0))
+
+    elif command == "start_from_point":
+        StartFromPoint(db, constants.meterId, datetime.datetime(2024, 10, 7, 23, 57))
+
+    elif command == "resume":
+        Resume(db, constants.meterId)
+
+    # Below are commands that are not required for running of thew virtual meter but can still be used for testing/debugging
+    # Please change the inputs as required for testing/debugging
+    # Please ensure that if you are testing/debugging that you change the value of the meterID input (or change its value in the constants file) so that it is not 1003253 or an existing meterID that you wish not to overwrite/edit.
+    elif command == "add_meter":
+        AddMeter(db, constants.meterId)
 
     elif command == "clear_today_data":
         ClearTodayData(db, constants.meterId)
 
     elif command == "clear_yesterday_data":
         ClearYesterdayData(db, constants.meterId)
+
+    elif command == "add_minute_data":
+        AddMinuteData(db, constants.meterId,
+                      constants.minuteTime,
+                      constants.minuteIntensity,
+                      constants.minuteVoltage)
 
     elif command == "add_minute_array":
         AddMinuteArray(db, constants.meterId,
@@ -71,14 +85,6 @@ def RunCommand(command, db):
                             constants.minuteIntensity,
                             constants.minuteVoltage
                        ]]))
-
-    elif command == "set_current_day":
-        SetCurrentDay(db, constants.meterId,
-                      constants.currentDate)
-        
-    elif command == "set_yesterday_day":
-        SetYesterdayDay(db, constants.meterId,
-                      constants.currentDate)
 
     elif command == "add_day_summary":
         AddDaySummary(db, constants.meterId,
@@ -98,9 +104,6 @@ def RunCommand(command, db):
     elif command == "clear_all_data":
         ClearAllData(db, constants.meterId)
 
-    elif command == "load_from_csv":
-        LoadCsvData(db, constants.meterId, constants.dataFilepath)
-
     elif command == "clear_daily_from_time":
         ClearDailyFromTime(db, constants.meterId, constants.minuteTime)
 
@@ -108,10 +111,10 @@ def RunCommand(command, db):
         ClearOverallFromDate(db, constants.meterId, datetime.datetime(2024, 9, 14))
 
     elif command == "get_minute_data":
-        print(GetMinuteData(db, constants.meterId, datetime.datetime(2024, 9, 12, 5, 21)))
+        print(GetMinuteData(db, constants.meterId, datetime.datetime(2024, 10, 7, 12, 00)))
 
     elif command == "get_day_summary":
-        print(GetDaySummary(db, constants.meterId, datetime.datetime(2024, 9, 12)))
+        print(GetDaySummary(db, constants.meterId, datetime.datetime(2024, 10, 6)))
 
     elif command == "get_latest_minute":
         print(GetLatestMinute(db, constants.meterId))
@@ -127,35 +130,6 @@ def RunCommand(command, db):
 
     elif command == "get_all_overall":
         print(GetAllOverall(db, constants.meterId))
-
-    elif command == "update_daily_data_difference":
-        UpdateDailyDataDifference(db, constants.meterId, constants.currentDate - constants.minuteTime)
-
-    elif command == "update_daily_data_difference":
-        UpdateMonthlyDataDifference(db, constants.meterId, constants.currentDate - constants.summaryDate)
-
-    elif command == "update_all_datetime_data":
-        UpdateAllDatetimeData(db, constants.meterId, constants.currentDate)
-
-    elif command == "move_daily_data_to_previous_daily_data":
-        MoveDailyDataToPreviousDay(db, constants.meterId)
-
-    elif command == "calculate_and_save_overall_data":
-        (CalculateAndSaveOverallData(db, constants.meterId))
-
-    # Below are all commands to required to run virtual meter
-
-    elif command == "setup_with_historical_data":
-        SetupWithHistoricalData(db, constants.meterId, datetime.datetime(2024, 10, 6, 23, 58))
-
-    elif command == "setup_with_no_data":
-        setupWithNoData(db, constants.meterId, datetime.datetime(2024, 10, 9, 22, 0))
-
-    elif command == "start_from_point":
-        StartFromPoint(db, constants.meterId, datetime.datetime(2024, 10, 7, 1, 0))
-
-    elif command == "resume":
-        Resume(db, constants.meterId)
 
 if __name__ == "__main__":
     main()

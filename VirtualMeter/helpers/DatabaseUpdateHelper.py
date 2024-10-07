@@ -1,5 +1,6 @@
 import datetime
 
+### DID NOT END UP USING THESE FUNCTIONS IN FINAL IMPLEMENTATION SO THEY HAVE NOT BEEN THOROUGHLY TESTED
 
 def UpdateDailyDataDifference(db, meterId: str, timeDifference: datetime):
     """

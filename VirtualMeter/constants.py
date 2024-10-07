@@ -3,12 +3,12 @@
 ################################################################################
 import datetime
 
+
 # File path for consumption data file
 dataFilepath = "data/household_power_consumption.csv"
 
 # MeterId to index database tables
-#meterId = "1003253"
-meterId = "test20"
+meterId = "1003253"
 
 # Input Settings #
 # Daily Data

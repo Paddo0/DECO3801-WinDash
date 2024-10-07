@@ -10,6 +10,7 @@ def AddMeter(db, meterId):
     :param db: database reference to apply changes to
     :param meterId: variable to set as the document identifier
     """
+
     # Default dailyData collection structure
     dailySetup = {
         "currentDate": datetime.datetime.now(),
@@ -21,6 +22,7 @@ def AddMeter(db, meterId):
         "data": [],
     }
 
+    # Default previousDayDailyData collection structure
     previousDayDailyDataSetup = {
         "yesterdayDate": datetime.datetime.now() - timedelta(days=1),
         "seriesData": [],
@@ -33,13 +35,12 @@ def AddMeter(db, meterId):
 
     return
 
-
 def AddMinuteData(db, meterId, time, intensity, voltage):
     """
     Adds an entry to the daily series data
     :param db: database reference to apply changes to
     :param meterId: meter to add data to
-    :param time: time of observation
+    :param time: datetime object representing the time of observation
     :param intensity: average amps used over interval
     :param voltage: average voltage over interval
     """
@@ -152,7 +153,6 @@ def SetYesterdayDay(db, meterId, date):
 
     return
 
-
 def AddDaySummary(db, meterId, date, summary):
     """
     Adds an entry to the overallData data array
@@ -179,13 +179,12 @@ def AddDaySummary(db, meterId, date, summary):
 
     return
 
-
 def AddDayArraySummary(db, meterId, listOfData):
     """
     Adds a list of values to the overallData data array
     :param db: database reference to apply changes to
     :param meterId: meter to add list of data to
-    :param listOfData: list of daily summary data in the form (date, summary)
+    :param listOfData: list of daily summary data in the form (date, summary) - summary has same structure as param summary in AddDaySummary function
     """
 
     # Unpacking list into entry format
@@ -208,7 +207,6 @@ def AddDayArraySummary(db, meterId, listOfData):
 
     return
 
-
 def ClearOverallData(db, meterId):
     """
     Clears the data array in the overallData collection for the given meter
@@ -220,7 +218,6 @@ def ClearOverallData(db, meterId):
     db.collection("overallData").document(meterId).update({"data": []})
 
     return
-
 
 def ClearAllData(db, meterId):
     """
@@ -235,16 +232,15 @@ def ClearAllData(db, meterId):
 
     return
 
-
 def ClearDailyFromTime(db, meterId: str, time: datetime):
     """
     Given a time of day, clears all data from dailyData after that point
     Combines the date from the currentDate in dailyData with the time provided in the 'time' argument
-    
     :param db: Database reference to apply changes to
     :param meterId: Meter to clear daily data from
     :param time: Time of day (hour, minute, second) to clear data after
     """
+
     # Ensure that the 'time' passed is timezone-naive
     if time.tzinfo is not None:
         time = time.replace(tzinfo=None)
@@ -295,6 +291,7 @@ def ClearOverallFromDate(db, meterId: str, date: datetime):
     :param meterId: Meter to clear daily summaries from
     :param date: Date of year to clear daily summaries after
     """
+
     # Ensure that the 'date' passed is timezone-naive
     if date.tzinfo is not None:
         date = date.replace(tzinfo=None)
@@ -330,6 +327,7 @@ def MoveDailyDataToPreviousDay(db, meterId: str):
     :param db: Database reference to apply changes to
     :param meterId: Meter ID to identify which document to move
     """
+
     # Get the current day's data from the dailyData collection
     doc_ref_daily = db.collection("dailyData").document(meterId)
     daily_data_doc = doc_ref_daily.get()
@@ -337,6 +335,7 @@ def MoveDailyDataToPreviousDay(db, meterId: str):
     if daily_data_doc.exists:
         daily_data = daily_data_doc.to_dict()
 
+        # Gets current date from dailyData collection and converts it to a datetime object
         date = daily_data.get('currentDate')
         transformed_date = datetime.datetime(
                 year=date.year,
@@ -346,6 +345,8 @@ def MoveDailyDataToPreviousDay(db, meterId: str):
                 minute=date.minute,
                 second=date.second
                 )
+        
+        # Sets the next date for the dailyData collection
         next_date = transformed_date + datetime.timedelta(days=1)
         next_date_midday = next_date.replace(hour=12, minute=0, second=0, microsecond=0)
 
@@ -361,7 +362,6 @@ def MoveDailyDataToPreviousDay(db, meterId: str):
         # Clear the current day's data in the dailyData collection
         doc_ref_daily.update({
             'seriesData': [],
-        #    'currentDate': datetime.datetime.now()  # Reset to today's date
             'currentDate': next_date_midday # Reset to next day's date
         })
 
@@ -373,10 +373,11 @@ def MoveDailyDataToPreviousDay(db, meterId: str):
 
 def CalculateAndSaveOverallData(db, meterId: str):
     """
-    Calculates the daily summary from the dailyData collection, saves it to overallData using AddDaySummary and then moves the daily data to previousDayDailyData.
+    Calculates the daily summary from the dailyData collection, saves it to overallData using AddDaySummary and then moves the daily data to previousDayDailyData collection.
     :param db: Database reference to apply changes to
     :param meterId: Meter ID to identify which document to calculate and save
     """
+
     # Get the current day's data from the dailyData collection
     doc_ref_daily = db.collection("dailyData").document(meterId)
     daily_data_doc = doc_ref_daily.get()
@@ -414,11 +415,14 @@ def transform_series_data(series_data):
     :param series_data: List of dictionaries retrieved from Firestore with 'Date', 'Intensity', and 'Voltage' keys.
     :return: List of tuples in the form (datetime, intensity, voltage).
     """
+
     transformed_data = []
     
     for entry in series_data:
         # Extract and ensure 'Date', 'Intensity', and 'Voltage' are in the right format
-        date = entry["Date"]  # This is already a datetime object
+
+        # Convert the date to a datetime object
+        date = entry["Date"]
         transformed_date = datetime.datetime(
             year=date.year,
             month=date.month,
