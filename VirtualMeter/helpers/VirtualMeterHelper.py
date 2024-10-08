@@ -61,7 +61,7 @@ def setupWithNoData(db, meterId, start_time):
     yesterday_midday_time = yesterday_date.replace(hour=12, minute=0, second=0, microsecond=0)
     SetYesterdayDay(db, meterId, yesterday_midday_time)
 
-def StartFromPoint(db, meterId, start_time):
+def StartFromPoint(db, meterId, start_time, run_fast):
     """
     Sets up the virtual meter starting from a given point in time. It retrieves any missing data between the latest 
     time recorded and up to and including the specified start time, processes that data, and then resumes the meter from the next minute 
@@ -74,6 +74,7 @@ def StartFromPoint(db, meterId, start_time):
     :param db: The reference to the database where the meter data is stored.
     :param meterId: The ID of the meter.
     :param start_time: A `datetime` object representing the time from which to start the virtual meter.
+    :param run_fast: A boolean flag that determines whether to use the fast simulation mode. If `True`, the `RunFast` function is used to add entries at a quicker pace based on the specified interval. If `False`, the standard `Run` function is used, simulating entries in real-time.
     :return: None
     """
 
@@ -197,29 +198,34 @@ def StartFromPoint(db, meterId, start_time):
     future_data = ExtractFutureVirtualMeterCsvData(constants.dataFilepath, start_time)
 
     # Start running the virtual meter from the start time
-    Run(db, meterId, future_data, start_time)
+    if run_fast:
+        RunFast(db, meterId, future_data, constants.addInterval)
+    else:
+        Run(db, meterId, future_data, start_time)
 
-def StartFromNow(db, meterId):
+def StartFromNow(db, meterId, run_fast):
     """
     Starts the virtual meter from the current time. The function retrieves the current time, 
     rounded down to the nearest minute, and passes it to the StartFromPoint function to begin 
     running the virtual meter from this point.
     :param db: The reference to the Firebase database where meter data is stored.
     :param meterId: The unique identifier for the meter to be started from the current time.
+    :param run_fast: A boolean flag that determines whether to use the fast simulation mode. If `True`, the `RunFast` function is used to add entries at a quicker pace based on the specified interval. If `False`, the standard `Run` function is used, simulating entries in real-time.
     :return: None
     """
     # Retrieve the current time and round it down to the nearest minute
     start_time = (datetime.now()).replace(second=0, microsecond=0)
     
     # Call StartFromPoint to start the virtual meter from the current time
-    StartFromPoint(db, meterId, start_time)
+    StartFromPoint(db, meterId, start_time, run_fast)
 
-def Resume(db, meterId):
+def Resume(db, meterId, run_fast):
     """
     Resumes the virtual meter from the most recent recorded time. If no previous data is found, it starts from the 
     current time. The function retrieves future data starting from the latest time and processes it.
     :param db: The reference to the database where the meter data is stored.
     :param meterId: The ID of the meter.
+    :param run_fast: A boolean flag that determines whether to use the fast simulation mode. If `True`, the `RunFast` function is used to add entries at a quicker pace based on the specified interval. If `False`, the standard `Run` function is used, simulating entries in real-time.
     :return: None
     """
 
@@ -236,7 +242,10 @@ def Resume(db, meterId):
     future_data = ExtractFutureVirtualMeterCsvData(constants.dataFilepath, latest_time)
     
     # Start running the virtual meter from the latest time with the extracted future data
-    Run(db, meterId, future_data, future_data[0][0])
+    if run_fast:
+        RunFast(db, meterId, future_data, constants.addInterval)
+    else:
+        Run(db, meterId, future_data, future_data[0][0])
 
 def Run(db, meterId, future_data, start_time):
     """
@@ -287,5 +296,35 @@ def Run(db, meterId, future_data, start_time):
         # After waiting (or if already past), add the entry to the database
         AddMinuteData(db, meterId, entry_time, intensity, voltage)
         print(f"Adding entry to DB: {entry}")
+
+    return
+
+def RunFast(db, meterId, future_data, add_interval):
+    """
+    A simplified version of the Run function that adds entries at a faster pace based on the add_interval.
+    To be used for demonstrations in the exhibition.
+    :param db: The reference to the Firebase database.
+    :param meterId: The ID of the meter.
+    :param future_data: A list of future data entries containing (entry_time, intensity, voltage).
+    :param add_interval: The interval in seconds between each data entry addition.
+    """
+
+    previous_entry_date = future_data[0][0].date()
+
+    for entry in future_data:
+        entry_time, intensity, voltage = entry
+
+        # If it has moved on to the next day, calculate and save the overall data for the previous day
+        if entry_time.date() > previous_entry_date:
+            CalculateAndSaveOverallData(db, meterId)
+
+        previous_entry_date = entry_time.date()
+
+        # Add the entry to the database
+        AddMinuteData(db, meterId, entry_time, intensity, voltage)
+        print(f"Adding entry to DB: {entry}")
+
+        # Wait for the specified interval before adding the next entry
+        time.sleep(add_interval)
 
     return

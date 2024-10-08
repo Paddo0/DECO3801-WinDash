@@ -10,6 +10,9 @@ dataFilepath = "data/household_power_consumption.csv"
 # MeterId to index database tables
 meterId = "1003253"
 
+# Number of seconds between adding entries in RunFast
+addInterval = 5
+
 # Input Settings #
 # Daily Data
 # Defines individual minute time value for daily data
