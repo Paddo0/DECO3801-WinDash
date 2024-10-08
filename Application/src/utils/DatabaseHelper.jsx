@@ -26,7 +26,7 @@ export const GetDailyData = async (setData, meterId) => {
     {
         // Map values to [dates, watts]
         dailyDataList = dailyDataList[0]["seriesData"];
-        dailyDataList = dailyDataList.map(entry => [entry["Date"].toDate(), entry["Intensity"] * entry["Voltage"]]);
+        dailyDataList = dailyDataList.map(entry => [entry["Date"].toDate(), entry["Intensity"] * entry["Voltage"] / 1000.0]);
 
         // Saving array data with header
         setData([DailyChartHeaders[0], ...dailyDataList]);

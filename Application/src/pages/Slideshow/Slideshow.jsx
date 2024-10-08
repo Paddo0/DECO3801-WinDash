@@ -3,7 +3,7 @@ import Images from "../../utils/SlideshowImport";
 import { PageNames } from "../../data/constants";
 import { Link } from "react-router-dom";
 import { DailyDataContext, OverallDataContext } from "../../utils/ContextProvider";
-import { GetHighUsage } from "../../utils/DataProcessHelper";
+import { GetAverageUsage } from "../../utils/DataProcessHelper";
 
 /**
  * Base slideshow page component
@@ -21,7 +21,7 @@ function Slideshow() {
     // Defining effects
     // High usage effect
     useEffect(() => {
-        setHighUsage(GetHighUsage(overallData, 7));
+        setHighUsage(GetAverageUsage(overallData, 7, 2));
     }, [overallData]);
 
     // Image effect
