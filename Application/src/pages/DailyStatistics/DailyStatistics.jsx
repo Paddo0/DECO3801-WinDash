@@ -5,8 +5,9 @@ import UsagePredictions from "../../components/ui/UsagePredictions";
 import UsageLimit from "../../components/ui/UsageLimit";
 import { PredictionsInfo, TimeIntervals } from "../../data/constants";
 import { SettingsContext } from '../../pages/Settings/SettingsContext';
-import { DailyDataContext } from '../../utils/ContextProvider';
+import { DailyDataContext, OverallDataContext } from '../../utils/ContextProvider';
 import { CalculateDailyUsage } from '../../utils/SummaryHelper';
+import { CalculateDailySummary } from '../../utils/DataProcessHelper';
 
 /**
  * Base daily statistics page component
@@ -16,17 +17,27 @@ function DailyStatistics() {
     // Getting data contexts for page
     const { config } = useContext(SettingsContext);
     const { dailyData } = useContext(DailyDataContext);
+    const { overallData } = useContext(OverallDataContext);
     
-    function GetSummaryData() {
-        var summaryData = [
-            ["Daily Total:", "55.7", "kWh" ], // Update these values based on fetched data
-            ["Max Intensity:", "8.0", "kW" ],
-            ["Minimum Intensity:", "1.4", "kW" ],
-            ["Average Intensity:", "5", "kW" ],
-        ];
+    function CalculateSummaryData() 
+    {
+        // Handling empty data
+        if (dailyData.length <= 1)
+        {
+            return { display: [
+                ["Daily Total:", 0, "kWh" ],
+                ["Max Intensity:", 0, "kW" ],
+                ["Minimum Intensity:", 0, "kW" ],
+                ["Average Intensity:", 0, "kW" ],
+            ], 
+            limit: [1, 1, 1, 1]};
+                
+        }
 
-        return summaryData;
+        return CalculateDailySummary(dailyData, overallData, 7);
     }
+    // Defining summary state
+    const [ summaryData, setSummaryData ] = useState(CalculateSummaryData());
 
     // Defining graph configs
     const graphOptions = 
@@ -55,6 +66,9 @@ function DailyStatistics() {
 
         // Updating usage limits
         setUsageData((previousData) => { return {...previousData, powerUsage: CalculateDailyUsage(dailyData)} });
+
+        // Updating summary data object
+        setSummaryData(CalculateSummaryData());
     }, [dailyData]);
 
     return (
@@ -72,7 +86,7 @@ function DailyStatistics() {
 
             <UsageStatistics 
                 title="Daily Summary" 
-                summaryData={GetSummaryData()}
+                summaryData={summaryData}
             />
 
             <UsagePredictions 

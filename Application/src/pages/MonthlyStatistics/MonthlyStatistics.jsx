@@ -7,24 +7,34 @@ import { DataSeries, PredictionsInfo, TimeIntervals } from "../../data/constants
 import { SettingsContext } from '../../pages/Settings/SettingsContext';
 import { OverallDataContext } from '../../utils/ContextProvider';
 import { CalculateOverallLastNDays } from '../../utils/SummaryHelper';
+import { CalculateOverallSummary } from '../../utils/DataProcessHelper';
 
 function MonthlyStatistics() {
     const { config } = useContext(SettingsContext);
     const { overallData } = useContext(OverallDataContext);
     
-    // State for graph data and summary data
-    const [ summaryData ] = useState([
-        ["This Quarter:", "", "-"],
-        ["Total Usage:", "0", "kWh"],
-        ["Max Daily Usage:", "0", "kWh"],
-        ["Min Daily Usage:", "0", "kWh"],
-        ["Average Intensity:", "0", "kW"],
-        ["Overall:", "", "-"],
-        ["Usage:", "0", "kWh"],
-        ["Max Daily Usage:", "0", "kWh"],
-        ["Min Daily Usage:", "0", "kWh"],
-        ["Average Intensity:", "0", "kW"],
-    ]);
+    // Function to calculate summary data object
+    function CalculateSummaryData() 
+    {
+        // Handling empty data
+        if (overallData.length <= 1)
+        {
+            // Returning default summary object
+            return { display: [
+                ["Past Month Averages:", " ", " "], // Invisible character to pad space
+                ["Total Consumption:", 0, "kWh" ],
+                ["Maximum Intensity:", 0, "kW" ],
+                ["Minimum Intensity:", 0, "kW" ],
+                ["Average Intensity:", 0, "kW" ],
+            ], 
+            limit: [0, 1, 1, 1, 1]};
+        }
+
+        return CalculateOverallSummary(overallData, 30);
+    }
+
+    // Defining summary state
+    const [ summaryData, setSummaryData ] = useState(CalculateSummaryData());
 
     // Defining graph configs
     const graphOptions = 
@@ -58,6 +68,9 @@ function MonthlyStatistics() {
         }
         // Updating usage limits
         setUsageData((previousData) => { return {...previousData, powerUsage: CalculateOverallLastNDays(overallData, 30)} });
+
+        // Updating summary data
+        setSummaryData(CalculateSummaryData());
     }, [overallData]);
 
     return (

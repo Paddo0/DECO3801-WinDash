@@ -20,7 +20,7 @@ export const CalculateDailyUsage = (dailyData) => {
     }
 
     // Returning total power usage in kWh (divided by 60to convert minutes to hours (Wh) and 1000 to (kWh))
-    return total / 60.0 / 1000.0;
+    return total / 60.0;
 };
 
 /**
@@ -39,7 +39,7 @@ export const CalculateOverallLastNDays = (overallData, n) => {
     // Iterating over the last n days and getting the total usage
     const totalLen = overallData.length;
     var totalUsage = 0.0;
-    for (var i = Math.max(totalLen - n, 0); i < totalLen; i++)
+    for (var i = Math.max(totalLen - n, 1); i < totalLen; i++)
     {
         totalUsage += overallData[i][4];
     }
