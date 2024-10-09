@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import UsageGraph from "../../components/ui/UsageGraph";
 import UsageStatistics from "../../components/ui/UsageStatistics";
 import UsagePredictions from "../../components/ui/UsagePredictions";
@@ -19,7 +19,7 @@ function DailyStatistics() {
     const { dailyData } = useContext(DailyDataContext);
     const { overallData } = useContext(OverallDataContext);
     
-    function CalculateSummaryData() 
+    const CalculateSummaryData = useCallback( () =>
     {
         // Handling empty data
         if (dailyData.length <= 1)
@@ -35,7 +35,7 @@ function DailyStatistics() {
         }
 
         return CalculateDailySummary(dailyData, overallData, 7);
-    }
+    }, [dailyData, overallData]);
     // Defining summary state
     const [ summaryData, setSummaryData ] = useState(CalculateSummaryData());
 
@@ -69,7 +69,7 @@ function DailyStatistics() {
 
         // Updating summary data object
         setSummaryData(CalculateSummaryData());
-    }, [dailyData]);
+    }, [dailyData, CalculateSummaryData]);
 
     return (
         <div className="DailyStatistics">
