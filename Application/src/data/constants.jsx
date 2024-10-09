@@ -1,4 +1,7 @@
 
+// Number of days calculate back for monthly statistics
+export const n = 30;
+
 export const PageNames = {
     SLIDESHOW_PAGE_NAME: "Slideshow",
     HOME_PAGE_NAME: "Dashboard",

@@ -14,8 +14,10 @@
     "react-idle-timer": "^5.7.2",
     "react-scripts": "5.0.1",
     "react-simple-keyboard": "^3.8.7",
+    "react-slick": "^0.30.2",
     "react-transition-group": "^4.4.5",
     "reactjs-popup": "^2.0.6",
+    "slick-carousel": "^1.8.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

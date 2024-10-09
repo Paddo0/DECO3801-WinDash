@@ -3,7 +3,7 @@ import UsageGraph from "../../components/ui/UsageGraph";
 import UsageStatistics from "../../components/ui/UsageStatistics";
 import UsagePredictions from "../../components/ui/UsagePredictions";
 import UsageLimit from "../../components/ui/UsageLimit";
-import { DataSeries, PredictionsInfo, TimeIntervals } from "../../data/constants";
+import { DataSeries, n, PredictionsInfo, TimeIntervals } from "../../data/constants";
 import { SettingsContext } from '../../pages/Settings/SettingsContext';
 import { OverallDataContext } from '../../utils/ContextProvider';
 import { CalculateOverallLastNDays } from '../../utils/SummaryHelper';
@@ -30,7 +30,7 @@ function MonthlyStatistics() {
             limit: [0, 1, 1, 1, 1]};
         }
 
-        return CalculateOverallSummary(overallData, 30);
+        return CalculateOverallSummary(overallData, n);
     }, [overallData]);
 
     // Defining summary state
@@ -67,7 +67,7 @@ function MonthlyStatistics() {
             setDate(new Date(overallData.at(-1)[0]));
         }
         // Updating usage limits
-        setUsageData((previousData) => { return {...previousData, powerUsage: CalculateOverallLastNDays(overallData, 30)} });
+        setUsageData((previousData) => { return {...previousData, powerUsage: CalculateOverallLastNDays(overallData, n)} });
 
         // Updating summary data
         setSummaryData(CalculateSummaryData());
