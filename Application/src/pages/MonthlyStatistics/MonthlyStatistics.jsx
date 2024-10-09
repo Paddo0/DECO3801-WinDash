@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useCallback } from 'react';
 import UsageGraph from "../../components/ui/UsageGraph";
 import UsageStatistics from "../../components/ui/UsageStatistics";
 import UsagePredictions from "../../components/ui/UsagePredictions";
@@ -14,7 +14,7 @@ function MonthlyStatistics() {
     const { overallData } = useContext(OverallDataContext);
     
     // Function to calculate summary data object
-    function CalculateSummaryData() 
+    const CalculateSummaryData = useCallback(() => 
     {
         // Handling empty data
         if (overallData.length <= 1)
@@ -31,7 +31,7 @@ function MonthlyStatistics() {
         }
 
         return CalculateOverallSummary(overallData, 30);
-    }
+    }, [overallData]);
 
     // Defining summary state
     const [ summaryData, setSummaryData ] = useState(CalculateSummaryData());
@@ -71,7 +71,7 @@ function MonthlyStatistics() {
 
         // Updating summary data
         setSummaryData(CalculateSummaryData());
-    }, [overallData]);
+    }, [overallData, CalculateSummaryData]);
 
     return (
         <div className="MonthlyStatistics">

@@ -11,11 +11,24 @@ import { GetSeriesData } from "../../utils/DataProcessHelper";
  */
 function UsageGraph(props)
 {
+    // Data error handler for empty data arrays (only header)
+    const GetDataState = (data) =>
+    {
+        // Adding zero data point to display empty graph
+        if (data.length <= 1)
+        {
+            return [data[0], [new Date(), ...(new Array(data[0].length - 1).fill(1))]]
+        }
+
+        // Returning data
+        return data
+    }
+
     // Defining graph states
     const [ graphConfig, setGraphConfig ] = useState(props.graphOptions[props.graphOptionsDefault].function(props.date));
     const [ graphConfigIndex, setGraphConfigIndex ] = useState(props.graphOptionsDefault);
     const [ seriesState, setSeriesState ] = useState(props.defaultSeries);
-    const [ dataState, setDataState ] = useState(props.data);
+    const [ dataState, setDataState ] = useState(GetDataState(props.data));
     const [ colors, setColors ] = useState(props.defaultSeries.seriesColor);
 
     // Data state helper
@@ -24,7 +37,7 @@ function UsageGraph(props)
         setSeriesState(series);
 
         // Getting series data based on state selected
-        setDataState(GetSeriesData(props.data, series.index));
+        setDataState(GetDataState(GetSeriesData(props.data, series.index)));
 
         setColors(series.seriesColor);
     }, [props.data]);
