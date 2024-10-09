@@ -129,3 +129,27 @@ export const CalculateOverallSummary = (overallData, n) => {
         GetAverageUsage(overallData, overallData.length, 3) * 1.5, 
         GetAverageUsage(overallData, overallData.length, 1) * 1.5]};
 }
+
+/**
+ * Function to get the max value of a given column
+ * @param {*} data Data to get max value from column from
+ * @param {*} i Column to get max value
+ * @returns Max value of column i in dataset data
+ */
+export const GetMax = (data, i) =>
+{
+    // Error handling for empty datasets
+    if (data.length <= 1)
+    {
+        return 0.0;
+    }
+
+    // Calculating maximum for given column
+    var max = 0;
+    for (var j = 1; j < data.length; j++)
+    {
+        max = Math.max(max, data[j][i]);
+    }
+
+    return max;
+}

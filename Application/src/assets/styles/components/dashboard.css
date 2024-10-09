@@ -55,13 +55,15 @@
     display: flex;
     justify-content: space-around;
     padding: 1.4%; /* Increase padding to accommodate larger buttons */
+    gap: 2.2vw;
   }
   
   .footer-button {
     background-color: var(--navbar-background-col);
     color: var(--navbar-icon-col-hex);
-    padding: 2vh 2vw;
+    padding: 2vh;
     font-size: 1.25vw;
+    width: 12.5vw;
     border: none;
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for buttons */
@@ -72,4 +74,21 @@
   .footer-button:hover {
     background-color: #1c1f25; /* Darker blue on hover */
   }
+
+.limit {
+  margin-bottom: 3vw;
+}
+
+.limit > .progressBar {
+  width: 16.3vh;
+}
+
+.configureMeterButton
+{
+  padding: 2vh 2vw;
+  color: var(--navbar-background-col);
+  font-size: 1.0vw;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for buttons */
+}
   
