@@ -11,6 +11,7 @@ import { CalculateDailyUsage, CalculateOverallLastNDays } from '../../utils/Summ
 import { SettingsContext } from '../Settings/SettingsContext';
 import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
 import { GetColor } from '../../utils/CircularBarHelper';
+import { GetMax } from '../../utils/DataProcessHelper';
 
 /**
  * Base dashboard page component
@@ -100,12 +101,12 @@ function Dashboard() {
           <h3>Current Usage</h3>
           <div className="limit">
               <CircularProgressbar
-                  value={(GetLatest(dailyData, 1) / Math.max(GetLatest(overallData, 1), 0.01)) * 100} 
+                  value={(GetLatest(dailyData, 1) / Math.max(GetLatest(overallData, 1), 0.01, 0.01, GetMax(dailyData, 1))) * 100} 
                   text={(GetLatest(dailyData, 1)).toFixed(1) + ' kW'}
                   className='progressBar'
                   strokeWidth={10} 
                   styles={buildStyles({
-                      pathColor: GetColor((GetLatest(dailyData, 1) / Math.max(GetLatest(overallData, 1), 0.01))),
+                      pathColor: GetColor((GetLatest(dailyData, 1) / Math.max(GetLatest(overallData, 1), 0.01, GetMax(dailyData, 1)))),
                       textColor: 'rgba(35, 39, 47, 255)'
                   })}
               />
