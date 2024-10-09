@@ -26,7 +26,7 @@ export const GetDailyData = async (setData, meterId) => {
     {
         // Map values to [dates, watts]
         dailyDataList = dailyDataList[0]["seriesData"];
-        dailyDataList = dailyDataList.map(entry => [entry["Date"].toDate(), entry["Intensity"] * entry["Voltage"] / 1000.0]);
+        dailyDataList = dailyDataList.map(entry => [new Date(entry["Date"].toDate().setHours(entry["Date"].toDate().getHours() - 10)), entry["Intensity"] * entry["Voltage"] / 1000.0]);
 
         // Saving array data with header
         setData([DailyChartHeaders[0], ...dailyDataList]);
@@ -57,7 +57,7 @@ export const GetOverallData = async (setData, meterId) => {
         // Mapping values to [date, ave, max, min, total]
         overallDataList = overallDataList[0]["data"];
         overallDataList = overallDataList.map(entry => [
-            entry["Date"].toDate(),
+            new Date(entry["Date"].toDate().setHours(entry["Date"].toDate().getHours() - 10)),
             entry["AverageIntensity"],
             entry["MaximumIntensity"],
             entry["MinimumIntensity"],
