@@ -1,8 +1,9 @@
 import Icons from "../../utils/IconImportHelper";
 import { PageNames } from "../../data/constants";
-import { Link, useLocation, useOutlet } from "react-router-dom";
+import { Link, useLocation, useOutlet, useNavigate } from "react-router-dom";
 import { SwitchTransition, CSSTransition } from 'react-transition-group';
 import { useRef } from "react";
+import { useIdleTimer } from 'react-idle-timer'
 
 /**
  * Defines the side navigation bar that routes the user to all pages of the application
@@ -14,6 +15,19 @@ function Navbar()
     const location = useLocation();
     const outlet = useOutlet();
     const nodeRef = useRef(null);
+
+    // On idle function navigate to page
+    const navigate = useNavigate();
+    const onIdle = () => {
+      navigate("/slideshow");
+    }
+  
+    // Defining idle timer
+    useIdleTimer({
+      onIdle,
+      timeout: 60_000,
+      throttle: 500
+    });
 
     return (
         <>
