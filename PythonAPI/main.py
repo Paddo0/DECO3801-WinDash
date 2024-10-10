@@ -9,8 +9,10 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 
 # initialize Firestore
 cred = credentials.Certificate('/YOU/OWN/PATH')  # Replace with your service account path
+
 firebase_admin.initialize_app(cred)
 db = firestore.client()
+
 
 @app.route('/add', methods=['POST'])
 def post_prediction():
@@ -22,45 +24,8 @@ def post_prediction():
     except Exception as e:
         return f"An Error Occurred: {e}", 400
 
-"""
-@app.route('/prediction', methods=['POST'])
-def get_prediction():
-    try:
-        # get meterId from the frontend
-        data = request.get_json()
-        meter_id = data.get('meterId')
 
-        if not meter_id:
-            print("Meter ID is missing!")
-            return jsonify({"error": "Meter ID is required"}), 400
-
-        print(f"Received meter ID: {meter_id}")
-
-        # use meterId to find Firestore corresponding document
-        doc_ref = db.collection('dailyData').document(meter_id)
-        doc = doc_ref.get()
-
-        if not doc.exists:
-            print(f"No document found for meter ID: {meter_id}")
-            return jsonify({"error": "No data found for the given meter ID"}), 404
-
-        meter_data = doc.to_dict()
-        print(f"Document data for meter ID {meter_id}: {meter_data}")
-
-        # Get the intensity data in Firestore and pass it to the model for prediction
-        intensity_values = [entry['Intensity'] for entry in meter_data['seriesData']]
-
-        # Use the model to predict intensity
-        prediction = test(intensity_values)  
-        return jsonify({"prediction": prediction[0][0]})  
-
-    except Exception as e:
-        print(f"Error during prediction: {str(e)}")
-        return jsonify({"error": str(e)}), 500
-
-"""
-
-@app.route('/daily-prediction', methods=['POST'])
+           
 def get_daily_prediction():
     try:
         # Receive meterId
@@ -128,21 +93,9 @@ def get_data():
     return "Database integration pending"
 
 
-"""
-@app.route('/pred', methods=['GET'])
-def get_data():
-    # TODO - Implement a method to retrieve real-time data from the database 
-    try:
-        prediction = get_pred()  # Call the get_pred function from RNN
-        print(f"Prediction from get_pred: {prediction}")
-        return jsonify({"prediction": prediction})  # Return the prediction result
-    except Exception as e:
-        return f"An Error Occurred: {e}", 400
-"""
 
 
 def main():
-    # TODO - Implement a python API using Flask or any other API tool to return machine learning predictions
     print("TODO")
 
 if __name__ == "__main__":
