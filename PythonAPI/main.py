@@ -8,7 +8,7 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 # initialize Firestore
-cred = credentials.Certificate('/YOU/OWN/PATH')  # Replace with your service account path
+cred = credentials.Certificate('/YOUR/SERVICE/ACCOUNT/PATH')  # Replace with your service account path
 
 firebase_admin.initialize_app(cred)
 db = firestore.client()
@@ -25,7 +25,7 @@ def post_prediction():
         return f"An Error Occurred: {e}", 400
 
 
-           
+@app.route('/daily-prediction', methods=['POST'])          
 def get_daily_prediction():
     try:
         # Receive meterId
@@ -47,6 +47,7 @@ def get_daily_prediction():
 
         # Get Intensity and pass to the model
         intensity_values = [entry['Intensity'] for entry in meter_data['seriesData']]
+        print(f"Intensity values for prediction: {intensity_values}")
 
         # Use the model to pred
         prediction = test(intensity_values)
@@ -77,6 +78,8 @@ def get_monthly_prediction():
 
         # Get `AverageIntensity` from data
         intensity_values = [entry['AverageIntensity'] for entry in meter_data['data']]
+        print(f"Intensity values for prediction: {intensity_values}")
+
 
         # Use the model to pred
         prediction = test(intensity_values)
