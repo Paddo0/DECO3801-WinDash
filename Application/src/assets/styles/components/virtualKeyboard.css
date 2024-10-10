@@ -1,0 +1,15 @@
+
+.keyboard {
+    position: absolute;
+}
+
+.keyboardDiv {
+    position: fixed;
+    width: 90vw;
+    left: 5vw;
+    bottom: 43vh;
+}
+
+.hg-theme-default .hg-button {
+    height: 7vh !important;
+}

@@ -1,20 +1,70 @@
-
 # DECO3801 - Virtual Meter
 
-## Summary
+## Overview
 
-TODO - Summary
+The Virtual Meter Simulation is a Python-based project designed to simulate the operation of a virtual energy meter. It processes and inserts energy consumption data into a Firebase Firestore database, allowing users to simulate energy usage data at specific times and analyse consumption trends over time.
 
-(Currently I have set up a constants file to store all the config settings in one place but that can be subject to change over the course of the project if the requirements have changed)
+### Key Features:
+- **Simulates Historical and Real-Time Data**: The virtual meter can be set up with historical data or start from a specified point in time.
+- **Flexible Start Time**: Allows running the simulation from any specific point in time, including testing scenarios for the future or the past.
+- **Data Extraction and Processing**: Extracts data from CSV files and processes it to generate daily summaries.
+- **Integration with Firebase Firestore**: Stores energy consumption data, daily summaries, and historical records in a Firestore database.
+- **Resumption Capabilities**: Can resume the simulation from the last recorded time, ensuring continuity in data processing.
 
----
+## Project Structure
 
-## Functionality
+The project contains the following components:
 
-TODO - List of functions to run to be able to help with debugging i.e. resetting database to default to run application again, starting live-data inputting fom data
+- `main.py`: Entry point of the project, manages command-line input to run different commands and functionalities.
+- `constants.py`: Stores project constants such as the meter ID, file paths, and other configuration variables.
+- `helpers/`: Contains helper files that break down the project's functionality into manageable modules:
+  - `CalculationHelper.py`: Handles calculations for daily summaries based on minute-level data.
+  - `CsvDataHelper.py`: Manages data extraction from CSV files, including historical, future, and range-based data.
+  - `DatabaseMutationHelper.py`: Provides functions for adding and clearing data in the Firestore database.
+  - `DatabaseRetrieveHelper.py`: Retrieves specific data points from the Firestore database.
+  - `DatabaseUpdateHelper.py`: Includes functions to update or shift date-time data in the database. CURRENTLY UNUSED AND NOT FULLY TESTED
+  - `VirtualMeterHelper.py`: Manages the setup, start, and running processes of the virtual meter.
+- `data/`: Stores the required files to run the virtual meter.
 
----
+## Setup Instructions
 
-## Run Instructions
+### Prerequisites
+- Python 3.8+
+- Firebase Admin SDK credentials file (`.json`) for authenticating with the Firebase project.
+- Firebase Firestore configured as the database backend.
+- Required Python packages:
+  - `firebase-admin`
+  - `numpy`
 
-TODO - Add the instructions on how to set up the virtual meter to be used in the showcase, this would include instructions on when to reset to default, what to run for each configuration, and how to configure each debugging mode e.g. setting each interval to send data, what date and time to start from in the data, e.t.c
+### Installation
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/yourusername/virtual-meter-simulation.git
+   cd virtual-meter-simulation
+
+2. **Install the required Python packages**:
+   ```bash
+   pip install firebase_admin numpy
+
+3. **Configure Database**
+    - Add Firebase Admin SDK credentials JSON file to the data directory
+
+4. **Add Data**
+    - Retrieve data from the following link: [UCI Electric Power Consumption Dataset](https://www.kaggle.com/datasets/uciml/electric-power-consumption-data-set/data)
+    - Convert to a csv file (can do be changing the file extension from .txt to .csv)
+    - Save csv file to data directory
+    - Change dataFilepath in constants.py if required
+
+### Virtual Meter Run Instructions
+1. **Set Up the Database**:
+   - Use the `setup_with_historical_data` or `setup_with_no_data` commands to initialize the database.
+   - Change the `meterId` variable in `constants.py` to specify which virtual meter to use.
+
+2. **Run the Virtual Meter**:
+   - Use `setup_with_no_data`, `StartFromNow`, or `Resume` functions to begin the virtual meter simulation.
+   - Refer to the function documentation in `VirtualMeterHelper.py` for detailed descriptions of each function.
+
+3. **Testing/Debugging**:
+   - The commands provided in `main.py` can also be used for testing and debugging. Modify `command` in `main.py` to execute different functions.
+   - Note: Only the setup and run functions are required for regular usage; other commands are meant for testing and debugging.

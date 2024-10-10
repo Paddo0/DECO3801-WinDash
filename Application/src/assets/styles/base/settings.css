@@ -23,11 +23,12 @@
 .Settings > h2 {
     font-size: var(--settings-subheader-size);
     color: var(--navbar-background-col);
+    margin-top: 0.9vw;
 }
 
 .Settings p {
     font-weight: bold;
-    font-size: 0.83vw;
+    font-size: 1.0vw;
     color: var(--navbar-background-col);
 }
 
@@ -38,12 +39,20 @@
 .SettingsInput {
     width: 50%;
     float: right;
-    margin-bottom: 3%;
+    margin-bottom: 0%;
+}
+
+.SettingsInput input {
+    padding: 0.8vw;
 }
 
 .SettingsLabel {
     width: 50%;
     float: left;
+}
+
+.SettingsLabel > p {
+    margin-top: 2.2vw;
 }
 
 /* Meter display styles */

@@ -38,3 +38,28 @@
 .navbar-icon:hover {
     background-color: var(--navbar-background-hover-col);
 }
+
+/* Back icon div styles */
+.fixed-navbar-icon {
+    width: var(--navbar-width);
+    height: var(--navbar-width);
+    margin-bottom: var(--navbar-icon-spacing);
+    display: flex;
+    position: absolute;
+    top: 0;
+    justify-content: center;
+}
+
+/* Icon image styles */
+.fixed-navbar-icon > img {
+    display: block;
+    margin: auto;
+    width: var(--navbar-icon-size);
+    height: var(--navbar-icon-size);
+    filter: var(--navbar-icon-svg-filter);
+}
+
+/* Icon div hover properties */
+.fixed-navbar-icon:hover {
+    background-color: var(--navbar-background-hover-col);
+}

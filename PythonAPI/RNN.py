@@ -10,7 +10,7 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Load training data
-df = pd.read_csv('/YOUR/LOCAL/DATASET/PATH/', sep=';')
+df = pd.read_csv('/Users/songyutong/Downloads/household_power_consumption.tx', sep=';')
 
 # Convert 'Global_intensity' to float
 df['Global_intensity'] = pd.to_numeric(df['Global_intensity'], errors='coerce')
@@ -40,7 +40,7 @@ def create_inout_sequences(input_data, tw):
 
 train_sequences = create_inout_sequences(V_ten, look_back)
 
-# LSTM Model
+# LSTM Model with increased number of layers
 class LSTM(nn.Module):
     def __init__(self, input_size, hidden_size, output_size, num_layers=2):
         super(LSTM, self).__init__()
@@ -58,7 +58,7 @@ class LSTM(nn.Module):
 
 # Hyperparameters
 input_size = 1
-hidden_size = 75
+hidden_size = 100
 output_size = 1
 num_layers = 1  # Number of LSTM layers
 
@@ -136,8 +136,7 @@ def test(inputs):
     return predicted_values_global
 
 # Call the training process
-# train(epochs)
+#train(epochs)
 
 # Call the test process
-# test(V_ten[-look_back:].tolist())
-
+#test(V_ten[-look_back:].tolist())

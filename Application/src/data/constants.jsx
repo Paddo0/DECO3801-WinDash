@@ -1,5 +1,9 @@
 
+// Number of days calculate back for monthly statistics
+export const n = 30;
+
 export const PageNames = {
+    SLIDESHOW_PAGE_NAME: "Slideshow",
     HOME_PAGE_NAME: "Dashboard",
     DAILY_PAGE_NAME: "Daily_Statistics",
     MONTHLY_PAGE_NAME: "Monthly_Statistics",
@@ -7,55 +11,167 @@ export const PageNames = {
     INFO_PAGE_NAME: "Help"
 };
 
+// Default settings when values haven't been specified
 export const DefaultSettings = {
-    meterId: 1003253,
+    meterId: "1003253", // TODO - set this to undefined meterId
     usageLimits: {
         dailyLimit: 20,
         monthlyLimit: 1000
     }
 }
 
+// Default headings for charts
+export const DailyChartHeaders = [["Time", "Power Consumption"]];
+export const OverallChartHeaders = [["Date", "Average Intensity", "Maximum Intensity", "Minimum Intensity", "Total Consumption"]];
+
 // Date Constants
-export const Dates = {
+export var Dates = {
     Today: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()),
-    TodayHours: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), new Date().getHours())
+    TodayHours: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), new Date().getHours()),
+    OffsetTime: new Date(0, 0, 0, 10)
 }
 
 // All date data is structured, new Date(Year, Month, Day, Hour, Minute, Second)
-export const TimeIntervals = {
-    OneHour: {
-        minValue: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), new Date().getHours() - 1),
-        maxValue: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), new Date().getHours())
+export var TimeIntervals = {
+    OneHour: { 
+        function: (date) => 
+            { return{
+                minValue: new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours() - 1, date.getMinutes()),
+                maxValue: new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes()),
+                format: "hh:mm a"
+                }
+            },
+        name: "1 Hour",
+        index: 0
     },
-    TwelveHour: {
-        minValue: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), new Date().getHours() - 12),
-        maxValue: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), new Date().getHours())
+    TwelveHour: { 
+        function: (date) => 
+            { return{
+                minValue: new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours() - 12, date.getMinutes()),
+                maxValue: new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes()),
+                format: "hh:mm a"
+                }
+            },
+        name: "12 Hour",
+        index: 1
     },
-    Daily: {
-        minValue: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()),
-        maxValue: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1)
+    Daily: { 
+        function: (date) => 
+            { return{
+                minValue: new Date(date.getFullYear(), date.getMonth(), date.getDate()),
+                maxValue: new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1),
+                format: "hh:mm a"
+                }
+            },
+        name: "Daily",
+        index: 2
     },
-    FiveDay: {
-        minValue: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() - 5),
-        maxValue: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())
+    FiveDay: { 
+        function: (date) => 
+            { return{
+                minValue: new Date(date.getFullYear(), date.getMonth(), date.getDate() - 5 + 1),
+                maxValue: new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1),
+                format: "dd MMM"
+                }
+            },
+        name: "5 Day",
+        index: 0
     },
-    OneMonth: {
-        minValue: new Date(new Date().getFullYear(), new Date().getMonth() - 1, new Date().getDate()),
-        maxValue: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())
+    OneMonth: { 
+        function: (date) => 
+            { return{
+                minValue: new Date(date.getFullYear(), date.getMonth() - 1, date.getDate() + 1),
+                maxValue: new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1),
+                format: "dd MMM"
+                }
+            },
+        name: "1 Month",
+        index: 1
     },
-    ThreeMonth: {
-        minValue: new Date(new Date().getFullYear(), new Date().getMonth() - 3),
-        maxValue: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())
+    ThreeMonth: { 
+        function: (date) => 
+            { return{
+                minValue: new Date(date.getFullYear(), date.getMonth() - 3),
+                maxValue: new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1),
+                format: "dd MMM"
+                }
+            },
+        name: "3 Months",
+        index: 2
     },
-    SixMonth: {
-        minValue: new Date(new Date().getFullYear(), new Date().getMonth() - 6),
-        maxValue: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())
+    SixMonth: { 
+        function: (date) => 
+            { return{
+                minValue: new Date(date.getFullYear(), date.getMonth() - 6),
+                maxValue: new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1),
+                format: "dd MMM"
+                }
+            },
+        name: "6 Months",
+        index: 3
     },
-    Yearly: {
-        minValue: new Date(new Date().getFullYear() - 1, new Date().getMonth(), new Date().getDate()),
-        maxValue: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())
-    }
+    Yearly: { 
+        function: (date) => 
+            { return{
+                minValue: new Date(date.getFullYear() - 1, date.getMonth(), date.getDate()),
+                maxValue: new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1),
+                format: "dd MMM"
+                }
+            },
+        name: "1 Year",
+        index: 4
+    },
+    ThreeYears: { 
+        function: (date) => 
+            { return{
+                minValue: new Date(date.getFullYear() - 3, date.getMonth(), date.getDate()),
+                maxValue: new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1),
+                format: "MMM YYYY"
+                }
+            },
+        name: "3 Years",
+        index: 5
+    },
 }
+
+// Series constants
+export const DataSeries = [
+    {
+        name: "All Series",
+        seriesName: "",
+        index: 0,
+        seriesColor: {
+            0: { color: '#f1ca3a' },
+            1: { color: '#e7711b' },
+            2: { color: '#6f9654' },
+            3: { color: '#6167b0' }
+        }
+    },
+    {
+        name: "Average",
+        seriesName: "Average Intensity",
+        index: 1,
+        seriesColor: { 0: { color: '#f1ca3a' } }
+    },
+    {
+        name: "Max Usage",
+        seriesName: "Maximum Intensity",
+        index: 2,
+        seriesColor: { 0: { color: '#e7711b' } }
+    },
+    {
+        name: "Min Usage",
+        seriesName: "Minimum Intensity",
+        index: 3,
+        seriesColor: { 0: { color: '#6f9654' } }
+    },
+    {
+        name: "Total Usage",
+        seriesName: "Total Consumption",
+        index: 4,
+        seriesColor: { 0: { color: '#6167b0' } }
+    }
+]
 
 export const DailyGraphConfig = {
     minValue: TimeIntervals.Daily.minValue,

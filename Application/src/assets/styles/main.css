@@ -5,6 +5,7 @@
 @import 'base/pageContent.css';
 @import 'base/settings.css';
 @import 'base/statistics.css';
+@import 'base/slideshow.css';
 @import 'components/navBar.css';
 @import 'components/backgroundDimmer.css';
 @import 'components/pop-up.css';
@@ -13,3 +14,5 @@
 @import 'components/usage-statistics.css';
 @import 'components/usage-prediction.css';
 @import 'components/dropdown.css';
+@import 'components/virtualKeyboard.css';
+@import 'components/meterIdOverlay.css';

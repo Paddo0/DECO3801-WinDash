@@ -8,10 +8,10 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 # initialize Firestore
-cred = credentials.Certificate('/YOUR/SERVICE/ACCOUNT/PATH')  # Replace with your service account path
-
+cred = credentials.Certificate('/YOUR/OWN/PATH')  # Replace with your service account path
 firebase_admin.initialize_app(cred)
 db = firestore.client()
+
 
 
 @app.route('/add', methods=['POST'])
