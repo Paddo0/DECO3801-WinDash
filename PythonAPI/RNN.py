@@ -121,7 +121,7 @@ def test(inputs):
     # Plot the actual data and prediction
     
     # There are many issues when plotting, you can uncomment this part when you train to show the plot
-    
+    """
     actual_data = values.to_numpy().reshape(-1, 1)  # Use the original data
     plt.plot(actual_data, label='Actual Data', color='blue')  # Actual data is shown in blue
     plt.plot(np.arange(len(values), len(values) + look_back), predicted_values_global, label='Predictions', color='red')  # Prediction data is shown in red
@@ -131,7 +131,7 @@ def test(inputs):
     # Save the plot as a file instead of displaying it
     plt.savefig('prediction.png')
     plt.close()  # Ensure Matplotlib image is closed to prevent it from trying to manipulate a graphical window in the background thread
-    
+    """
 
     return predicted_values_global
 
