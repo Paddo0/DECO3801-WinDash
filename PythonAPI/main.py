@@ -8,10 +8,10 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 # initialize Firestore
-cred = credentials.Certificate('/YOUR/OWN/PATH')  # Replace with your service account path
+cred = credentials.Certificate('')  # Replace with your service account path
+
 firebase_admin.initialize_app(cred)
 db = firestore.client()
-
 
 
 @app.route('/add', methods=['POST'])
@@ -37,7 +37,7 @@ def get_daily_prediction():
         # Get document form dailyData in firebase
         doc_ref = db.collection('dailyData').document(meter_id)
         doc = doc_ref.get()
-
+        
         if not doc.exists:
             print(f"No document found for meter ID: {meter_id}")  
             return jsonify({"error": "No data found for the given meter ID"}), 404
@@ -51,9 +51,13 @@ def get_daily_prediction():
 
         # Use the model to pred
         prediction = test(intensity_values)
-        print(f"Generated prediction: {prediction[0][0]}") 
+        print(f'predictions is {prediction}')
+        
 
-        return jsonify({"prediction": prediction[0][0]})
+        # Calculate the average of the 24 predicted values
+        average_prediction = sum(prediction) / len(prediction)
+
+        return jsonify({"prediction": average_prediction})
 
     except Exception as e:
         print(f"Error during prediction: {str(e)}")  
@@ -75,15 +79,16 @@ def get_monthly_prediction():
             return jsonify({"error": "No data found for the given meter ID"}), 404
 
         meter_data = doc.to_dict()
-
+        
         # Get `AverageIntensity` from data
         intensity_values = [entry['AverageIntensity'] for entry in meter_data['data']]
         print(f"Intensity values for prediction: {intensity_values}")
 
-
         # Use the model to pred
+        
         prediction = test(intensity_values)
-        return jsonify({"prediction": prediction[0][0]})
+        
+        return jsonify({"prediction": prediction[0]})
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500

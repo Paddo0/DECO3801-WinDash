@@ -10,7 +10,7 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Load training data
-df = pd.read_csv('/Users/songyutong/Downloads/household_power_consumption.tx', sep=';')
+df = pd.read_csv('', sep=';') # replace with your local training dataset
 
 # Convert 'Global_intensity' to float
 df['Global_intensity'] = pd.to_numeric(df['Global_intensity'], errors='coerce')
@@ -27,7 +27,8 @@ values = prev[:100]
 V_ten = torch.FloatTensor(prev[:100].to_numpy()).view(-1).to(device)
 
 # Prepare input and target sequences
-look_back = 24
+
+look_back = 24 # For next 24 hours use
 
 def create_inout_sequences(input_data, tw):
     inout_seq = []
@@ -40,7 +41,7 @@ def create_inout_sequences(input_data, tw):
 
 train_sequences = create_inout_sequences(V_ten, look_back)
 
-# LSTM Model with increased number of layers
+# LSTM Model
 class LSTM(nn.Module):
     def __init__(self, input_size, hidden_size, output_size, num_layers=2):
         super(LSTM, self).__init__()
@@ -58,7 +59,7 @@ class LSTM(nn.Module):
 
 # Hyperparameters
 input_size = 1
-hidden_size = 100
+hidden_size = 75
 output_size = 1
 num_layers = 1  # Number of LSTM layers
 
@@ -120,7 +121,7 @@ def test(inputs):
     
     # Plot the actual data and prediction
     
-    # There are many issues when plotting, you can uncomment this part when you train to show the plot
+    # There are many risks when plotting(it may block your backend progressing) you can uncomment this part when you train to show the plot
     """
     actual_data = values.to_numpy().reshape(-1, 1)  # Use the original data
     plt.plot(actual_data, label='Actual Data', color='blue')  # Actual data is shown in blue
@@ -133,10 +134,10 @@ def test(inputs):
     plt.close()  # Ensure Matplotlib image is closed to prevent it from trying to manipulate a graphical window in the background thread
     """
 
-    return predicted_values_global
+    return predictions
 
 # Call the training process
-#train(epochs)
+# train(epochs)
 
 # Call the test process
-#test(V_ten[-look_back:].tolist())
+# test(V_ten[-look_back:].tolist())
