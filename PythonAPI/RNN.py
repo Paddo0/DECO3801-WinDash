@@ -2,35 +2,33 @@ import torch
 import torch.nn as nn
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
 from torch.autograd import Variable
-from sklearn.metrics import mean_squared_error, mean_absolute_error  # Import for error calculation
+from sklearn.metrics import mean_squared_error, mean_absolute_error
 
 # Check for GPU availability
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Load training data
-df = pd.read_csv('/Users/songyutong/Downloads/household_power_consumption.txt', sep=';') # this file is loaded from local, make sure you substitue it"
+df = pd.read_csv('', sep=';') # replace with your local training dataset
 
-# Convert 'Global_active_power' column to numeric, set non-convertible values to NaN
-df['Global_active_power'] = pd.to_numeric(df['Global_active_power'], errors='coerce')
-# Convert 'Global_active_power' column to float
-df['Global_active_power'] = df['Global_active_power'].astype(float)
+# Convert 'Global_intensity' to float
+df['Global_intensity'] = pd.to_numeric(df['Global_intensity'], errors='coerce')
+df['Global_intensity'] = df['Global_intensity'].astype(float)
+df['Global_intensity'] = [np.mean(df['Global_intensity'][i*60:i*60 + 60]) for i in range(len(df['Global_intensity']/60 - 1))]
+
+
 # Downsample the data, taking one value per minute
-prev = df['Global_active_power'][::60]
+prev = df['Global_intensity']
 
-# Normalize the data
-scaler = MinMaxScaler(feature_range=(-1, 1))
-# Use the first 100 values for training
+# Get the first 100 values for training
 values = prev[:100]
-# Apply scaling on 'Global_active_power'
-df['Global_active_power'] = scaler.fit_transform(df['Global_active_power'].values.reshape(-1,1))
-# Convert the first 100 values to a tensor and move to GPU (if available)
+# Convert the first 100 values to a tensor and move it to GPU (if available)
 V_ten = torch.FloatTensor(prev[:100].to_numpy()).view(-1).to(device)
 
 # Prepare input and target sequences
-look_back = 24
+
+look_back = 24 # For next 24 hours use
 
 def create_inout_sequences(input_data, tw):
     inout_seq = []
@@ -43,7 +41,7 @@ def create_inout_sequences(input_data, tw):
 
 train_sequences = create_inout_sequences(V_ten, look_back)
 
-# LSTM Model with increased number of layers
+# LSTM Model
 class LSTM(nn.Module):
     def __init__(self, input_size, hidden_size, output_size, num_layers=2):
         super(LSTM, self).__init__()
@@ -61,29 +59,28 @@ class LSTM(nn.Module):
 
 # Hyperparameters
 input_size = 1
-hidden_size = 100
+hidden_size = 75
 output_size = 1
-num_layers = 3  # Increase the number of LSTM layers
+num_layers = 1  # Number of LSTM layers
 
-# Initialize model with more layers
+# Initialize the model
 model = LSTM(input_size, hidden_size, output_size, num_layers=num_layers).to(device)
 
 # Loss function and optimizer
 criterion = nn.MSELoss().to(device)
 optimizer = torch.optim.AdamW(model.parameters(), lr=0.01)
 
-# Increase the number of epochs
-epochs = 100  # Increase the training epochs
+# Training loop
+epochs = 50
 
-# Training Loop with loss printing
 def train(epochs):
     for epoch in range(epochs):
-        total_loss = 0  # Initialize total loss for the epoch
+        total_loss = 0
         for seq, labels in train_sequences:
             seq, labels = seq.to(device), labels.to(device)
             optimizer.zero_grad()
             model.hidden_cell = (torch.zeros(num_layers, 1, model.hidden_layer_size).to(device),
-                            torch.zeros(num_layers, 1, model.hidden_layer_size).to(device))
+                                 torch.zeros(num_layers, 1, model.hidden_layer_size).to(device))
 
             y_pred = model(seq)
 
@@ -92,70 +89,55 @@ def train(epochs):
             torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
             optimizer.step()
 
-            # Accumulate total loss for the epoch
             total_loss += single_loss.item()
         
-        # Calculate and print the average loss for this epoch
         average_loss = total_loss / len(train_sequences)
         print(f'Epoch {epoch}, Average Loss: {average_loss}')
 
     torch.save(model.state_dict(), 'model_weights.pth')
     print(f'Final Epoch {epochs} loss: {average_loss}')
 
-# Testing (Prediction) function with error printing
-# Global variable to store predictions generated in the test function
-predicted_values_global = None
+# Test function
+predicted_values_global = None  # Global variable to store prediction values
 
-# Test function to generate predictions and save them to the global variable
 def test(inputs):
-    global predicted_values_global  # Use global variable
-    model.load_state_dict(torch.load('model_weights.pth'))
+    global predicted_values_global  # Global variable to store prediction values
+    model.load_state_dict(torch.load('model_weights.pth'))  # Load the trained model
     model.eval()
 
     predictions = []
     for i in range(look_back):
-        seq = torch.FloatTensor(inputs[-look_back:]).to(device)
+        seq = torch.FloatTensor(inputs[-look_back:]).to(device)  # Use the input data
         with torch.no_grad():
             model.hidden_cell = (torch.zeros(num_layers, 1, model.hidden_layer_size).to(device),
                                 torch.zeros(num_layers, 1, model.hidden_layer_size).to(device))
             pred_value = model(seq).item()
             inputs.append(pred_value)
             predictions.append(pred_value)
-
-    # Inverse transform predicted values back to original scale
-    predicted_values = scaler.inverse_transform(np.array(predictions).reshape(-1, 1))
-    predicted_values_global = predicted_values  # Save predictions to the global variable
-    print("Predicted Values:\n", predicted_values)
-
-    # Combine actual data and predicted data
-    actual_data = scaler.inverse_transform(values.to_numpy().reshape(-1, 1))
-    combined_values = np.concatenate((actual_data, predicted_values))
-
-    # Calculate and print prediction errors
-    mse = mean_squared_error(actual_data[-look_back:], predicted_values)
-    mae = mean_absolute_error(actual_data[-look_back:], predicted_values)
-    print(f"Mean Squared Error (MSE): {mse}")
-    print(f"Mean Absolute Error (MAE): {mae}")
-
-    # Plot the results
-    plt.plot(actual_data, label='Actual Data', color='blue')  # Set actual data color to blue
-    plt.plot(np.arange(len(values), len(values) + look_back), predicted_values, label='Predictions', color='red')  # Set predicted data color to red
-    plt.axvline(x=len(values), color='red', linestyle='--', label='Prediction Start')  # Optional: Mark the start of predictions
+    
+    # Save the prediction result
+    predicted_values_global = np.array(predictions).reshape(-1, 1)  # Store in global result
+    print("Predicted Values:\n", predicted_values_global)
+    
+    # Plot the actual data and prediction
+    
+    # There are many risks when plotting(it may block your backend progressing) you can uncomment this part when you train to show the plot
+    """
+    actual_data = values.to_numpy().reshape(-1, 1)  # Use the original data
+    plt.plot(actual_data, label='Actual Data', color='blue')  # Actual data is shown in blue
+    plt.plot(np.arange(len(values), len(values) + look_back), predicted_values_global, label='Predictions', color='red')  # Prediction data is shown in red
+    plt.axvline(x=len(values), color='red', linestyle='--', label='Prediction Start')  # Mark where predictions start
     plt.legend()
-    plt.show()
-    plt.savefig('prediction.png')
 
-# Flask Prediction API directly returns the first prediction generated by the test function
-def get_pred():
-    global predicted_values_global
-    if predicted_values_global is not None:
-        return predicted_values_global[0][0]  # Return the first prediction value
-    else:
-        return "No prediction available yet"  # If no prediction is available
+    # Save the plot as a file instead of displaying it
+    plt.savefig('prediction.png')
+    plt.close()  # Ensure Matplotlib image is closed to prevent it from trying to manipulate a graphical window in the background thread
+    """
+
+    return predictions
 
 # Call the training process
+# train(epochs)
 
-
-#train(epochs)  # Uncomment this line to start training
-test(V_ten[-look_back:].tolist())
-
+# Call the test process
+# test(V_ten[-look_back:].tolist())
