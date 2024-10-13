@@ -21,7 +21,7 @@ function Slideshow() {
     // Defining effects
     // High usage effect
     useEffect(() => {
-        setHighUsage(GetAverageUsage(overallData, 7, 2));
+        setHighUsage(GetAverageUsage(overallData, 7, 1));
     }, [overallData]);
 
     // Image effect
