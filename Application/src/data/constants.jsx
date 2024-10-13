@@ -13,7 +13,7 @@ export const PageNames = {
 
 // Default settings when values haven't been specified
 export const DefaultSettings = {
-    meterId: "1003253", // TODO - set this to undefined meterId
+    meterId: "",
     usageLimits: {
         dailyLimit: 20,
         monthlyLimit: 1000
