@@ -1,8 +1,8 @@
 from flask import Flask, request, jsonify
 import firebase_admin
 from firebase_admin import credentials, firestore
-from RNN import test  
 from flask_cors import CORS
+from RNN import test
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -52,12 +52,8 @@ def get_daily_prediction():
         # Use the model to pred
         prediction = test(intensity_values)
         print(f'predictions is {prediction}')
-        
 
-        # Calculate the average of the 24 predicted values
-        average_prediction = sum(prediction) / len(prediction)
-
-        return jsonify({"prediction": average_prediction})
+        return jsonify({"prediction": prediction})
 
     except Exception as e:
         print(f"Error during prediction: {str(e)}")  

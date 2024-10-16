@@ -190,9 +190,11 @@ export const PredictionsInfo = {
     {
         InfoText: "Generate the predicted usage for the remainder of the day using our AI Model trained from your usage patterns.",
         prediction: 6.2, // Dummy data / default value
+        predictionType: "daily"
     },
     Monthly: {
         InfoText: "Generate the predicted usage for the remainder of the quarter / month using algorithms based on your usage patterns.",
         prediction: 153.4, // Dummy data / default value
+        predictionType: "monthly"
     }
 }

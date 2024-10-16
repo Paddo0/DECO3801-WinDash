@@ -36,6 +36,14 @@ function DailyStatistics() {
 
         return CalculateDailySummary(dailyData, overallData, 7);
     }, [dailyData, overallData]);
+
+    // Defining augmented data state
+    const [ graphData, setGraphData ] = useState(dailyData);
+    const [ remainingHours, setRemainingHours ] = useState(24);
+
+    // Defining prediction state
+    const [ prediction, setPrediction ] = useState(null);
+
     // Defining summary state
     const [ summaryData, setSummaryData ] = useState(CalculateSummaryData());
 
@@ -71,10 +79,42 @@ function DailyStatistics() {
         setSummaryData(CalculateSummaryData());
     }, [dailyData, CalculateSummaryData]);
 
+    // Graph data update
+    useEffect(() => {
+        // Return daily data if predictions undefined
+        if (prediction == null)
+        {
+            setGraphData(dailyData);
+            return;
+        }
+
+        // Adding prediction onto daily data
+        // Defining extra series column on base daily data
+        var graphDataArray = [[dailyData[0][0], dailyData[0][1], "Prediction"]]
+        for (var i = 1; i < dailyData.length - 1; i++)
+        {
+            graphDataArray.push([dailyData[i][0], dailyData[i][1], null]);
+        }
+        graphDataArray.push([dailyData[dailyData.length - 1][0], dailyData[dailyData.length - 1][1], dailyData[dailyData.length - 1][1]]);
+
+        // Adding predicted series data
+        var latestInterval = new Date(dailyData.at(-1)[0]);
+        var remainingHours = 24 - latestInterval.getHours();
+        setRemainingHours(remainingHours);
+        for (var j = 0; j < remainingHours; j++)
+        {
+            var interval = new Date(latestInterval.setHours(latestInterval.getHours() + 1));
+            graphDataArray.push([interval, null, prediction[j]]);
+        }
+        
+        setGraphData(graphDataArray);
+
+    }, [ dailyData, prediction ]);
+
     return (
         <div className="DailyStatistics">
             <UsageGraph 
-                title="Daily Statistics" data={dailyData} 
+                title="Daily Statistics" data={graphData} 
                 graphOptions={graphOptions} 
                 graphOptionsDefault={graphOptionsDefault} 
                 date={date} 
@@ -90,8 +130,11 @@ function DailyStatistics() {
             />
 
             <UsagePredictions 
-                predictionsInfo={PredictionsInfo.Daily} 
+                predictionsInfo={PredictionsInfo.Daily}
+                predictionsSet={setPrediction}
+                prediction={prediction} 
                 usageData={usageData}
+                remainingHours={remainingHours}
             />
 
             <UsageLimit 

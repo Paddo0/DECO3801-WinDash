@@ -33,6 +33,9 @@ function MonthlyStatistics() {
         return CalculateOverallSummary(overallData, n);
     }, [overallData]);
 
+    // Defining prediction state
+    const [ prediction, setPrediction ] = useState(null);
+
     // Defining summary state
     const [ summaryData, setSummaryData ] = useState(CalculateSummaryData());
 
@@ -91,8 +94,10 @@ function MonthlyStatistics() {
             />
 
             <UsagePredictions 
-                predictionsInfo={PredictionsInfo.Monthly} 
-                usageData={usageData} 
+                predictionsInfo={PredictionsInfo.Monthly}
+                predictionsSet={setPrediction}
+                prediction={prediction} 
+                usageData={usageData}
             />
 
             <UsageLimit 

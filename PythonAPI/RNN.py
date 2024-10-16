@@ -10,7 +10,7 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Load training data
-df = pd.read_csv('', sep=';') # replace with your local training dataset
+df = pd.read_csv('data.csv', sep=';') # replace with your local training dataset
 
 # Convert 'Global_intensity' to float
 df['Global_intensity'] = pd.to_numeric(df['Global_intensity'], errors='coerce')
