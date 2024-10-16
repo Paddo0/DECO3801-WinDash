@@ -1,7 +1,6 @@
 import constants
 from helpers.DatabaseMutationHelper import *
 from helpers.DatabaseRetrieveHelper import *
-from helpers.DatabaseUpdateHelper import *
 from helpers.CsvDataHelper import *
 from helpers.VirtualMeterHelper import *
 import firebase_admin

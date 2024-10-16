@@ -3,15 +3,19 @@
 
 ## Summary
 
-This solution includes the website implementation of the WinDash - Innovative Energy Monitoring app. The website application within this solution is designed to act as an ambient user interface to deliver useful information and graphics about the energy consumption of their household. The user will have the ability to; set energy limits for their daily consumption to be notified when they will exceed this limit, have a AI/ML model show predictions of their expected daily / quarterly consumption, and view their current consumption statistics. To display this information to the user the website will be structured as seen below.
+This solution includes the implementation of the WinDash - Innovative Energy Monitoring app. The application within this solution is designed to act as an ambient user interface to deliver useful information and graphics about the energy consumption of their household. The user will have the ability to; set energy limits for their daily consumption to be notified when they will exceed this limit, have a AI/ML model show predictions of their expected daily / quarterly consumption, and view their current consumption statistics. To display this information to the user the website will be structured as seen below.
 
 ---
 
 ## Application Structure
 
+### Ambient Slideshow
+
+Navigating the back arrow or being inactive for long enough (60s) will lead users to the main ambient user interface which displays different mood-based images dependent on the amount of power that is currently being used. The criteria for 'high usage' is based on a multitude of their previous average usage.
+
 ### Dashboard / Home
 
-This will be the landing page of the website which will give a very brief overview of the consumption data. This page will also serve to redirect the user to every other webpage within the application.
+This will be the landing page of the website which will give a very brief overview of the consumption data. This page serves to redirect the user to every other webpage within the application and to display interesting facts about their usage that day that draws comparisons to everyday objects to help users visualize their power usage.
 
 ### Daily Statistics
 
@@ -19,19 +23,15 @@ This page will give the user all the information visualization of the current da
 
 ### Overall Statistics
 
-This page will be very similar to the daily statistics page where every data visualization used in the daily page will also be used in this page, except with the data covering a summary of all days with data recorded. This means the ML model will predict the expected consumption for the rest of the quarter (instead of rest of the day), and the limit will also be quarter based (or monthly based whichever will look better).
+This page will be very similar to the daily statistics page where every data visualization used in the daily page will also be used in this page, except with the data covering a summary of all days with data recorded.
 
 ### Settings
 
-The settings page will offer a large range of functionality to the user. This is where the user will be able to set daily limits and monthly limits to be shown within the statistics pages. This is also where the user would be able to change the meter that they have selected, in case they have made a mistake, or any other settings functionality that we can think of over the course of creating the project.
+The settings page will offer a large range of functionality to the user. This is where the user will be able to set daily limits and monthly limits to be shown within the statistics pages. This is also where the user would be able to change the meter that they have selected, in case they have made a mistake or reset to the default limits recommended by the application.
 
 ### Info
 
-This is a page to help the user with any questions they might have about the website and a guide on how to use the functionality within it. This is potentially an optional page if the scope of the other pages turns out being too large to complete within the allocated time frame since it isn't *needed* to complete the project.
-
-### Meter Id Input Pop-up
-
-While not a page, this pop-up is a necessary part of the application. The user input pop-up for their respective meter's id will be display to the user whenever they interact with functionality on the website that requires data to function.
+This is a page to help the user with any questions they might have about the website and a guide on how to use the functionality within it.
 
 ---
 
@@ -43,7 +43,7 @@ To generate the predictions for the user for their daily / overall consumption p
 
 ### Database Data
 
-To get the data to display to the user, the website queries a database using the meter id as the key to get the series data to display to the user. The website will have to make several queries in increments of about 1 minute (can be configured) to process the real-time data that will be received by the database by the virtual meter. The user will also be able to refresh the website if they want the data to be update quicker than the automated refresh timer.
+To get the data to display to the user, the website queries a database using the meter id as the key to get the series data to display to the user. The application also periodically queries the database in increments of about 30 seconds to process the real-time data that will be received by the database by the virtual meter. Since react is used, all components that are dependent on the data changing automatically update when the data is refreshed.
 
 ---
 
@@ -51,14 +51,17 @@ To get the data to display to the user, the website queries a database using the
 
 To run the application on your local machine to view the application, ensure that Node.js is installed on your computer and run the following command(s) within your terminal within the file path that this file is in.
 
+### `npm install`
+
+This is required to be run once before initially starting the application to download all package dependencies for the project.
+
 ### `npm start`
 
 This is the recommended way to run the application. \
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+The page will reload when you make changes.
 
 ### `npm run build`
 
