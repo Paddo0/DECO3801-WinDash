@@ -22,7 +22,6 @@ The project contains the following components:
   - `CsvDataHelper.py`: Manages data extraction from CSV files, including historical, future, and range-based data.
   - `DatabaseMutationHelper.py`: Provides functions for adding and clearing data in the Firestore database.
   - `DatabaseRetrieveHelper.py`: Retrieves specific data points from the Firestore database.
-  - `DatabaseUpdateHelper.py`: Includes functions to update or shift date-time data in the database. CURRENTLY UNUSED AND NOT FULLY TESTED
   - `VirtualMeterHelper.py`: Manages the setup, start, and running processes of the virtual meter.
 - `data/`: Stores the required files to run the virtual meter.
 
@@ -38,19 +37,13 @@ The project contains the following components:
 
 ### Installation
 
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/yourusername/virtual-meter-simulation.git
-   cd virtual-meter-simulation
-
-2. **Install the required Python packages**:
+1. **Install the required Python packages**:
    ```bash
    pip install firebase_admin numpy
-
-3. **Configure Database**
+2. **Configure Database**
     - Add Firebase Admin SDK credentials JSON file to the data directory
 
-4. **Add Data**
+3. **Add Data**
     - Retrieve data from the following link: [UCI Electric Power Consumption Dataset](https://www.kaggle.com/datasets/uciml/electric-power-consumption-data-set/data)
     - Convert to a csv file (can do be changing the file extension from .txt to .csv)
     - Save csv file to data directory
@@ -58,11 +51,11 @@ The project contains the following components:
 
 ### Virtual Meter Run Instructions
 1. **Set Up the Database**:
-   - Use the `setup_with_historical_data` or `setup_with_no_data` commands to initialize the database.
+   - Use the `SetupWithHistoricalData` or `SetupWithNoData` commands to initialize the database.
    - Change the `meterId` variable in `constants.py` to specify which virtual meter to use.
 
 2. **Run the Virtual Meter**:
-   - Use `setup_with_no_data`, `StartFromNow`, or `Resume` functions to begin the virtual meter simulation.
+   - Use `setupWithNoData`, `StartFromNow`, or `Resume` functions to begin the virtual meter simulation.
    - Refer to the function documentation in `VirtualMeterHelper.py` for detailed descriptions of each function.
 
 3. **Testing/Debugging**:
