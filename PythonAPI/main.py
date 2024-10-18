@@ -2,13 +2,13 @@ from flask import Flask, request, jsonify
 import firebase_admin
 from firebase_admin import credentials, firestore
 from flask_cors import CORS
-from RNN import test
+from predict import test
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 # initialize Firestore
-cred = credentials.Certificate('')  # Replace with your service account path
+cred = credentials.Certificate('deco-windash-firebase-adminsdk-u0tv1-f05fb8cc6f.json')  # Replace with your service account path
 
 firebase_admin.initialize_app(cred)
 db = firestore.client()

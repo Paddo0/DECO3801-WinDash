@@ -41,27 +41,7 @@ def create_inout_sequences(input_data, tw):
 
 train_sequences = create_inout_sequences(V_ten, look_back)
 
-# LSTM Model
-class LSTM(nn.Module):
-    def __init__(self, input_size, hidden_size, output_size, num_layers=2):
-        super(LSTM, self).__init__()
-        self.hidden_layer_size = hidden_size
-        self.num_layers = num_layers
-        self.lstm = nn.LSTM(input_size, hidden_size, num_layers=self.num_layers).to(device)
-        self.linear = nn.Linear(hidden_size, output_size).to(device)
-        self.hidden_cell = (torch.zeros(self.num_layers, 1, self.hidden_layer_size).to(device),
-                            torch.zeros(self.num_layers, 1, self.hidden_layer_size).to(device))
 
-    def forward(self, input_seq):
-        lstm_out, self.hidden_cell = self.lstm(input_seq.view(len(input_seq), 1, -1).to(device), self.hidden_cell)
-        predictions = self.linear(lstm_out.view(len(input_seq), -1).to(device))
-        return predictions[-1]
-
-# Hyperparameters
-input_size = 1
-hidden_size = 75
-output_size = 1
-num_layers = 1  # Number of LSTM layers
 
 # Initialize the model
 model = LSTM(input_size, hidden_size, output_size, num_layers=num_layers).to(device)
@@ -100,41 +80,6 @@ def train(epochs):
 # Test function
 predicted_values_global = None  # Global variable to store prediction values
 
-def test(inputs):
-    global predicted_values_global  # Global variable to store prediction values
-    model.load_state_dict(torch.load('model_weights.pth'))  # Load the trained model
-    model.eval()
-
-    predictions = []
-    for i in range(look_back):
-        seq = torch.FloatTensor(inputs[-look_back:]).to(device)  # Use the input data
-        with torch.no_grad():
-            model.hidden_cell = (torch.zeros(num_layers, 1, model.hidden_layer_size).to(device),
-                                torch.zeros(num_layers, 1, model.hidden_layer_size).to(device))
-            pred_value = model(seq).item()
-            inputs.append(pred_value)
-            predictions.append(pred_value)
-    
-    # Save the prediction result
-    predicted_values_global = np.array(predictions).reshape(-1, 1)  # Store in global result
-    print("Predicted Values:\n", predicted_values_global)
-    
-    # Plot the actual data and prediction
-    
-    # There are many risks when plotting(it may block your backend progressing) you can uncomment this part when you train to show the plot
-    """
-    actual_data = values.to_numpy().reshape(-1, 1)  # Use the original data
-    plt.plot(actual_data, label='Actual Data', color='blue')  # Actual data is shown in blue
-    plt.plot(np.arange(len(values), len(values) + look_back), predicted_values_global, label='Predictions', color='red')  # Prediction data is shown in red
-    plt.axvline(x=len(values), color='red', linestyle='--', label='Prediction Start')  # Mark where predictions start
-    plt.legend()
-
-    # Save the plot as a file instead of displaying it
-    plt.savefig('prediction.png')
-    plt.close()  # Ensure Matplotlib image is closed to prevent it from trying to manipulate a graphical window in the background thread
-    """
-
-    return predictions
 
 # Call the training process
 # train(epochs)
